@@ -11,8 +11,6 @@
  * and make sure the repulsionFactor is large enough to counteract that.
 **/
 
-// getting i_2
-
 class Vertex {
 
 	constructor (name, radius) {
@@ -85,629 +83,628 @@ class Edge {
 class IndependentSetPhysicsSimulation {
 
 	constructor () {
-	// TODO: reindent
 	
-	this.canvas = document.getElementById('isp-canvas');
-	this.context = this.canvas.getContext('2d');
-	this.vertices = [];
-	this.edges = [];
-	this.animationID = null;
-	this.vertexRadius = 10;
-	this.paused = false;
-	this.iteration = 0;
-	this.anchors = [];
-	this.numVertices = 0;
-	this.numEdges = 0;
-	this.numVerticesTextbox = document.getElementById('isp-num-vertices-field');
-	this.numEdgesTextbox = document.getElementById('isp-num-edges-field');
-	this.startSimulationButton = document.getElementById('isp-start-simulation-button');
-	this.pauseSimulationButton = document.getElementById('isp-pause-simulation-button');
-	this.simulating = false;
-	this.queryRegionButton = document.getElementById('isp-query-region-button');
-	this.regionXTextbox = document.getElementById('isp-query-region-x-field');;
-	this.regionYTextbox = document.getElementById('isp-query-region-y-field');
-	this.regionRadiusTextbox = document.getElementById('isp-query-region-radius-field');
-	this.imageData = null;
-	this.withAnchorCheckbox = document.getElementById('isp-anchors-toggle');
-	this.withWallsCheckbox = document.getElementById('isp-walls-toggle');
-	this.withAnchor = false;
-	this.withWalls = false;
-	this.querying = false;
-	this.queryDiv = document.getElementById('isp-query-popup');
-	this.resultsDiv = document.getElementById('isp-results-box');
-	this.independenceDiv = document.getElementById('isp-independence-box');
-	this.repulsionFactorTextbox = document.getElementById('isp-repulsion-factor-field');
-	this.attractionFactorTextbox = document.getElementById('isp-attraction-factor-field');
-	this.anchorMassTextbox = document.getElementById('isp-anchor-mass-field');
-	this.attractionFactor = 0;
-	this.repulsionFactor = 0;
-	this.drawEdgesCheckbox = document.getElementById('isp-draw-edges-toggle');
-	this.drawingEdges = false;
-	this.manualOverrideCheckbox = document.getElementById('isp-manual-override-toggle');
-	this.anchorMass = 0;
+		this.canvas = document.getElementById('isp-canvas');
+		this.context = this.canvas.getContext('2d');
+		this.vertices = [];
+		this.edges = [];
+		this.animationID = null;
+		this.vertexRadius = 10;
+		this.paused = false;
+		this.iteration = 0;
+		this.anchors = [];
+		this.numVertices = 0;
+		this.numEdges = 0;
+		this.numVerticesTextbox = document.getElementById('isp-num-vertices-field');
+		this.numEdgesTextbox = document.getElementById('isp-num-edges-field');
+		this.startSimulationButton = document.getElementById('isp-start-simulation-button');
+		this.pauseSimulationButton = document.getElementById('isp-pause-simulation-button');
+		this.simulating = false;
+		this.queryRegionButton = document.getElementById('isp-query-region-button');
+		this.regionXTextbox = document.getElementById('isp-query-region-x-field');;
+		this.regionYTextbox = document.getElementById('isp-query-region-y-field');
+		this.regionRadiusTextbox = document.getElementById('isp-query-region-radius-field');
+		this.imageData = null;
+		this.withAnchorCheckbox = document.getElementById('isp-anchors-toggle');
+		this.withWallsCheckbox = document.getElementById('isp-walls-toggle');
+		this.withAnchor = false;
+		this.withWalls = false;
+		this.querying = false;
+		this.queryDiv = document.getElementById('isp-query-popup');
+		this.resultsDiv = document.getElementById('isp-results-box');
+		this.independenceDiv = document.getElementById('isp-independence-box');
+		this.repulsionFactorTextbox = document.getElementById('isp-repulsion-factor-field');
+		this.attractionFactorTextbox = document.getElementById('isp-attraction-factor-field');
+		this.anchorMassTextbox = document.getElementById('isp-anchor-mass-field');
+		this.attractionFactor = 0;
+		this.repulsionFactor = 0;
+		this.drawEdgesCheckbox = document.getElementById('isp-draw-edges-toggle');
+		this.drawingEdges = false;
+		this.manualOverrideCheckbox = document.getElementById('isp-manual-override-toggle');
+		this.anchorMass = 0;
 		
-	$(this.startSimulationButton).on('click', (function () {
-		if(!this.simulating){
+		$(this.startSimulationButton).on('click', (function () {
+			if(!this.simulating){
 		
-			if(this.querying){
+				if(this.querying){
 			
-				this.queryDiv.style.display = 'none';
-				this.querying = false;
+					this.queryDiv.style.display = 'none';
+					this.querying = false;
 				
-			}
+				}
 	
-			this.simulating = true;
+				this.simulating = true;
 	
-			this.numVertices = this.numVerticesTextbox.value;
-			var numVertices = this.numVertices;
-			this.numEdges = this.numEdgesTextbox.value;
-			var numEdges = this.numEdges;
+				this.numVertices = this.numVerticesTextbox.value;
+				var numVertices = this.numVertices;
+				this.numEdges = this.numEdgesTextbox.value;
+				var numEdges = this.numEdges;
 	
-			this.vertices = new Array();
-			var vertices = this.vertices;
-			var vertexRadius = this.vertexRadius;
-			this.anchors = new Array();
-			var anchors = this.anchors;
-			for(var i = 0; i < numVertices; i++){
+				this.vertices = new Array();
+				var vertices = this.vertices;
+				var vertexRadius = this.vertexRadius;
+				this.anchors = new Array();
+				var anchors = this.anchors;
+				for(var i = 0; i < numVertices; i++){
 	
-				vertices.push(new Vertex('V_' + i, vertexRadius));
+					vertices.push(new Vertex('V_' + i, vertexRadius));
 		
-			}
+				}
 	
-			var canvas = this.canvas;
-			var center_x = canvas.width/2;
-			var center_y = canvas.height/2;
-			var radius = canvas.height/4;
+				var canvas = this.canvas;
+				var center_x = canvas.width/2;
+				var center_y = canvas.height/2;
+				var radius = canvas.height/4;
 	
-			var vertexSubscript;
-			var maxColor = parseInt('ffffff', 16);
+				var vertexSubscript;
+				var maxColor = parseInt('ffffff', 16);
 	
-			for(var i = 0; i < numVertices; i++){
-				vertices[i].center = {x: (Math.random()*canvas.width) + 1, y: (Math.random()*canvas.height) + 1};
-				vertices[i].center.x = Math.max(20, Math.min((canvas.width - 20), vertices[i].center.x));
-				vertices[i].center.y = Math.max(20, Math.min((canvas.height - 20), vertices[i].center.y));
-				vertexSubscript = parseInt(vertices[i].name.substring(2), 10);
-				vertices[i].color = 'hsl(' + (vertexSubscript * 360/numVertices) + ', 100%, 75%)';
-			}
+				for(var i = 0; i < numVertices; i++){
+					vertices[i].center = {x: (Math.random()*canvas.width) + 1, y: (Math.random()*canvas.height) + 1};
+					vertices[i].center.x = Math.max(20, Math.min((canvas.width - 20), vertices[i].center.x));
+					vertices[i].center.y = Math.max(20, Math.min((canvas.height - 20), vertices[i].center.y));
+					vertexSubscript = parseInt(vertices[i].name.substring(2), 10);
+					vertices[i].color = 'hsl(' + (vertexSubscript * 360/numVertices) + ', 100%, 75%)';
+				}
 			
-			this.withAnchor = this.withAnchorCheckbox.checked;
-			this.withWalls = this.withWallsCheckbox.checked;
+				this.withAnchor = this.withAnchorCheckbox.checked;
+				this.withWalls = this.withWallsCheckbox.checked;
 			
-			if(this.manualOverrideCheckbox.checked){
+				if(this.manualOverrideCheckbox.checked){
 			
-				this.attractionFactor = this.attractionFactorTextbox.value;
-				this.repulsionFactor = this.repulsionFactorTextbox.value;
-				this.anchorMass = this.anchorMassTextbox.value;
+					this.attractionFactor = this.attractionFactorTextbox.value;
+					this.repulsionFactor = this.repulsionFactorTextbox.value;
+					this.anchorMass = this.anchorMassTextbox.value;
 				
-			} else{
-			
-				this.anchorMass = 4;
-				this.attractionFactor = 1;
-				this.repulsionFactor = 1.5*numVertices*Math.max(1.5, Math.min(1.5, numVertices/numEdges));
-				this.repulsionFactorTextbox.value = this.repulsionFactor;
-				this.attractionFactorTextbox.value = this.attractionFactor;
-				this.anchorMassTextbox.value = this.anchorMass;
-				
-			}
-			
-			if(this.withAnchor){
-	
-			// create anchors
-	
-				vertices.push(new Vertex('x'));
-				vertices[vertices.length - 1].center = {x: canvas.width/2, y: canvas.height/2};
-				vertices[vertices.length - 1].mass = this.anchorMass;
-				vertices[vertices.length - 1].mobile = false;
-				vertices[vertices.length - 1].color = '#000';
-				anchors.push(vertices[vertices.length - 1]);
-				
-			}
-	
-			this.edges = new Array();
-			var edges = this.edges;
-		
-			var fromVertex, toVertex;
-	
-			for(var i = 0; i < numEdges; i++){
-	
-				fromVertex = Math.floor(numVertices * Math.random());
-				toVertex = Math.floor(numVertices * Math.random());
-		
-				if(fromVertex < toVertex){
-		
-					edges.push(new Edge(vertices[fromVertex], vertices[toVertex]));
-			
 				} else{
-		
-					i--;
 			
-				}
-		
-			}
-		
-			// add edges to the vertices
-	
-			for(var i = 0; i < edges.length; i++){
-		
-				edges[i].to.adjacentVertices.push(edges[i].from);
-				edges[i].from.adjacentVertices.push(edges[i].to);
-		
-			}
-	
-			// calculate nonEdges
-	
-			var allEdges = new Array();
-	
-			var nonEdges = new Array();
-	
-			for(var i = 0; i < vertices.length; i++){
-	
-				var row = new Array();
-	
-				for(var j = 0; j < vertices.length; j++){
-		
-					row.push(new Edge(vertices[i], vertices[j]));
-			
-				}
-		
-				allEdges.push(row);
-		
-			}
-	
-			var fromVertex;
-			var toVertex;
-	
-			for(var i = 0; i < edges.length; i++){
-	
-				fromVertex = parseInt(edges[i].from.name.substring(2));
-				toVertex = parseInt(edges[i].to.name.substring(2));
-	
-				allEdges[fromVertex][toVertex] = null;
-		
-			}
-	
-			for(var i = 0; i < allEdges.length; i++){
-	
-				for(var j = 0; j < allEdges[i].length; j++){
-		
-					if(allEdges[i][j] != null){
-			
-						nonEdges.push(new Edge(vertices[i], vertices[j]));
+					this.anchorMass = 4;
+					this.attractionFactor = 1;
+					this.repulsionFactor = 1.5*numVertices*Math.max(1.5, Math.min(1.5, numVertices/numEdges));
+					this.repulsionFactorTextbox.value = this.repulsionFactor;
+					this.attractionFactorTextbox.value = this.attractionFactor;
+					this.anchorMassTextbox.value = this.anchorMass;
 				
+				}
+			
+				if(this.withAnchor){
+	
+				// create anchors
+	
+					vertices.push(new Vertex('x'));
+					vertices[vertices.length - 1].center = {x: canvas.width/2, y: canvas.height/2};
+					vertices[vertices.length - 1].mass = this.anchorMass;
+					vertices[vertices.length - 1].mobile = false;
+					vertices[vertices.length - 1].color = '#000';
+					anchors.push(vertices[vertices.length - 1]);
+				
+				}
+	
+				this.edges = new Array();
+				var edges = this.edges;
+		
+				var fromVertex, toVertex;
+	
+				for(var i = 0; i < numEdges; i++){
+	
+					fromVertex = Math.floor(numVertices * Math.random());
+					toVertex = Math.floor(numVertices * Math.random());
+		
+					if(fromVertex < toVertex){
+		
+						edges.push(new Edge(vertices[fromVertex], vertices[toVertex]));
+			
+					} else{
+		
+						i--;
+			
 					}
-			
+		
 				}
 		
-			}
+				// add edges to the vertices
 	
-			// add nonAdjacentVertices for each vertex
-	
-			for(var i = 0; i < nonEdges.length; i++){
-	
-				nonEdges[i].to.nonAdjacentVertices.push(nonEdges[i].from);
-				nonEdges[i].from.nonAdjacentVertices.push(nonEdges[i].to);
+				for(var i = 0; i < edges.length; i++){
 		
-			}
+					edges[i].to.adjacentVertices.push(edges[i].from);
+					edges[i].from.adjacentVertices.push(edges[i].to);
+		
+				}
 	
-			this.iteration = 0;
+				// calculate nonEdges
+	
+				var allEdges = new Array();
+	
+				var nonEdges = new Array();
+	
+				for(var i = 0; i < vertices.length; i++){
+	
+					var row = new Array();
+	
+					for(var j = 0; j < vertices.length; j++){
+		
+						row.push(new Edge(vertices[i], vertices[j]));
 			
-			if(numEdges < 1000){
-	
-				this.drawingEdges = this.drawEdgesCheckbox.checked;
+					}
 		
-			} else if(this.drawEdgesCheckbox.checked){
+					allEdges.push(row);
+		
+				}
 	
-				var message = "Drawing more than 1000 edges is a bad idea unless you have a very fast computer.";
-				message += "\nIf you choose not to draw the edges, they will still be factored into the computation.";
-				message += "\nTo disable edge drawing, click cancel. To draw edges anyway, click OK.";
+				var fromVertex;
+				var toVertex;
 	
-				if(confirm(message)){
+				for(var i = 0; i < edges.length; i++){
+	
+					fromVertex = parseInt(edges[i].from.name.substring(2));
+					toVertex = parseInt(edges[i].to.name.substring(2));
+	
+					allEdges[fromVertex][toVertex] = null;
+		
+				}
+	
+				for(var i = 0; i < allEdges.length; i++){
+	
+					for(var j = 0; j < allEdges[i].length; j++){
+		
+						if(allEdges[i][j] != null){
+			
+							nonEdges.push(new Edge(vertices[i], vertices[j]));
 				
-					this.drawingEdges = true;
+						}
+			
+					}
+		
+				}
+	
+				// add nonAdjacentVertices for each vertex
+	
+				for(var i = 0; i < nonEdges.length; i++){
+	
+					nonEdges[i].to.nonAdjacentVertices.push(nonEdges[i].from);
+					nonEdges[i].from.nonAdjacentVertices.push(nonEdges[i].to);
+		
+				}
+	
+				this.iteration = 0;
+			
+				if(numEdges < 1000){
+	
+					this.drawingEdges = this.drawEdgesCheckbox.checked;
+		
+				} else if(this.drawEdgesCheckbox.checked){
+	
+					var message = "Drawing more than 1000 edges is a bad idea unless you have a very fast computer.";
+					message += "\nIf you choose not to draw the edges, they will still be factored into the computation.";
+					message += "\nTo disable edge drawing, click cancel. To draw edges anyway, click OK.";
+	
+					if(confirm(message)){
 				
-				} else {
+						this.drawingEdges = true;
 				
-					this.drawingEdges = false;
-					this.drawEdgesCheckbox.checked = false;
+					} else {
+				
+						this.drawingEdges = false;
+						this.drawEdgesCheckbox.checked = false;
 					
+					}
+				
 				}
-				
-			}
 	
-			this.animate();
+				this.animate();
 			
-			this.startSimulationButton.value = "End simulation";
+				this.startSimulationButton.value = "End simulation";
 			
-		} else{
+			} else{
 		
-			this.simulating = false;
-			this.startSimulationButton.value = "Start simulation";
-			clearTimeout(this.animationID);
-			this.context.clearRect(0, 0, canvas.width, canvas.height);
-			
-			if(this.querying){
-			
-				this.querying = false;
-				this.queryDiv.style.display = 'none';
-				
-			}
-			
-			if(this.paused){
-			
-				this.paused = false;
-				this.pauseSimulationButton.value = "Pause simulation";
-				
-			}
-			
-		}
-		
-	}).bind(this));
-	
-	$(this.pauseSimulationButton).on('click', (function () {
-	
-		if(this.simulating){
-	
-			if(!this.paused){ // pause
-		
-				this.paused = true;
+				this.simulating = false;
+				this.startSimulationButton.value = "Start simulation";
 				clearTimeout(this.animationID);
-				this.pauseSimulationButton.value = "Unpause simulation";
+				this.context.clearRect(0, 0, canvas.width, canvas.height);
 			
-			} else{ // unpause
-		
 				if(this.querying){
 			
 					this.querying = false;
 					this.queryDiv.style.display = 'none';
-					this.context.putImageData(this.imageData, 0, 0);
 				
 				}
 			
-				this.animationID = window.setTimeout(this.animate.bind(this), 40);
-				this.paused = false;
-				this.pauseSimulationButton.value = "Pause simulation";
+				if(this.paused){
 			
-			}
-			
-		}
-		
-	}).bind(this));
-	
-	$(this.queryRegionButton).on('click', (function () {
-	
-		if(!this.querying){
-	
-			if(!this.paused){
-				this.pauseSimulationButton.click();	
-			}
-		
-			var regionX = this.regionXTextbox.value;
-			var regionY = this.regionYTextbox.value;
-			var regionRadius = this.regionRadiusTextbox.value;
-			var canvas = this.canvas;
-			var context = this.context;
-		
-			this.imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-		
-			context.save();
-			context.strokeStyle = '#000';
-			context.lineWidth = 1;
-			context.beginPath();
-			context.arc(regionX, regionY, regionRadius, 0, 2*Math.PI, true);
-			context.closePath();
-			context.stroke();
-			context.restore();
-		
-			this.querying = true;
-			
-			this.queryDiv.style.display = 'block';
-			
-			var queryRegionVertices = new Array();
-			
-			var setSize = 0;
-			
-			var resultString = "";
-			
-			var vertices = this.vertices;
-			
-			for(var v = 0; v < vertices.length; v++){
-			
-				if(vertices[v].mobile){ // weeds out anchor vertices
+					this.paused = false;
+					this.pauseSimulationButton.value = "Pause simulation";
 				
-					if(Math.pow(vertices[v].center.x - regionX, 2) + Math.pow(vertices[v].center.y - regionY, 2) < Math.pow(regionRadius, 2)){
-					
-						queryRegionVertices[v] = vertices[v];
-						setSize++;
-						resultString += (vertices[v].toString() + "<br />");
-						
+				}
+			
+			}
+		
+		}).bind(this));
+	
+		$(this.pauseSimulationButton).on('click', (function () {
+	
+			if(this.simulating){
+	
+				if(!this.paused){ // pause
+		
+					this.paused = true;
+					clearTimeout(this.animationID);
+					this.pauseSimulationButton.value = "Unpause simulation";
+			
+				} else{ // unpause
+		
+					if(this.querying){
+			
+						this.querying = false;
+						this.queryDiv.style.display = 'none';
+						this.context.putImageData(this.imageData, 0, 0);
+				
 					}
-					
+			
+					this.animationID = window.setTimeout(this.animate.bind(this), 40);
+					this.paused = false;
+					this.pauseSimulationButton.value = "Pause simulation";
+			
 				}
-				
+			
 			}
+		
+		}).bind(this));
+	
+		$(this.queryRegionButton).on('click', (function () {
+	
+			if(!this.querying){
+	
+				if(!this.paused){
+					this.pauseSimulationButton.click();	
+				}
+		
+				var regionX = this.regionXTextbox.value;
+				var regionY = this.regionYTextbox.value;
+				var regionRadius = this.regionRadiusTextbox.value;
+				var canvas = this.canvas;
+				var context = this.context;
+		
+				this.imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+		
+				context.save();
+				context.strokeStyle = '#000';
+				context.lineWidth = 1;
+				context.beginPath();
+				context.arc(regionX, regionY, regionRadius, 0, 2*Math.PI, true);
+				context.closePath();
+				context.stroke();
+				context.restore();
+		
+				this.querying = true;
 			
-			var edgeFound = false;
+				this.queryDiv.style.display = 'block';
 			
-			for(var w = 0; w < queryRegionVertices.length; w++){
+				var queryRegionVertices = new Array();
 			
-				if(queryRegionVertices[w] != null){
+				var setSize = 0;
 			
-					for(var x = 0; x < queryRegionVertices[w].adjacentVertices.length; x++){
+				var resultString = "";
+			
+				var vertices = this.vertices;
+			
+				for(var v = 0; v < vertices.length; v++){
+			
+					if(vertices[v].mobile){ // weeds out anchor vertices
+				
+						if(Math.pow(vertices[v].center.x - regionX, 2) + Math.pow(vertices[v].center.y - regionY, 2) < Math.pow(regionRadius, 2)){
 					
-						if(queryRegionVertices[parseInt(queryRegionVertices[w].adjacentVertices[x].name.substring(2), 10)] != null){
+							queryRegionVertices[v] = vertices[v];
+							setSize++;
+							resultString += (vertices[v].toString() + "<br />");
 						
-							edgeFound = true;
-							
-							break;
-							
 						}
-						
-					}
 					
+					}
+				
 				}
-				
-				if(edgeFound){
-					break;
-				}
-				
-			}
 			
-			if(edgeFound){
+				var edgeFound = false;
 			
-				this.independenceDiv.innerHTML = "Uh, oh! It appears that this set is not independent.";
-				
-			} else{
+				for(var w = 0; w < queryRegionVertices.length; w++){
 			
-				this.independenceDiv.innerHTML = "Success! An independent set of size " + setSize + "! <span style='font-size: 0.6em;'><a href='http://www.thewire.com/entertainment/2012/01/target-kristen-wiigs-target-lady-approved/47866/'>I gotta get me one o' those.</a></span>";
-				
-			}
+					if(queryRegionVertices[w] != null){
+			
+						for(var x = 0; x < queryRegionVertices[w].adjacentVertices.length; x++){
+					
+							if(queryRegionVertices[parseInt(queryRegionVertices[w].adjacentVertices[x].name.substring(2), 10)] != null){
+						
+								edgeFound = true;
 							
-			this.resultsDiv.innerHTML = resultString;
+								break;
+							
+							}
+						
+						}
+					
+					}
+				
+					if(edgeFound){
+						break;
+					}
+				
+				}
 			
-		}
-		
-	}).bind(this));
-	
-	$(this.drawEdgesCheckbox).on('change', (function () {
-	
-		var numEdges = this.numEdges;
-		if(this.simulating){
+				if(edgeFound){
 			
-			if(numEdges < 1000){
-	
-				this.drawingEdges = this.drawEdgesCheckbox.checked;
-
-			} else if(this.drawEdgesCheckbox.checked){
-
-				var message = "Drawing more than 1000 edges is a bad idea unless you have a very fast computer.";
-				message += "\nIf you choose not to draw the edges, they will still be factored into the computation.";
-				message += "\nTo disable edge drawing, click cancel. To draw edges anyway, click OK.";
-
-				if(confirm(message)){
-	
-					this.drawingEdges = true;
-	
-				} else {
-	
-					this.drawingEdges = false;
-					this.drawEdgesCheckbox.checked = false;
+					this.independenceDiv.innerHTML = "Uh, oh! It appears that this set is not independent.";
+				
+				} else{
+			
+					this.independenceDiv.innerHTML = "Success! An independent set of size " + setSize + "! <span style='font-size: 0.6em;'><a href='http://www.thewire.com/entertainment/2012/01/target-kristen-wiigs-target-lady-approved/47866/'>I gotta get me one o' those.</a></span>";
+				
+				}
+							
+				this.resultsDiv.innerHTML = resultString;
+			
+			}
 		
+		}).bind(this));
+	
+		$(this.drawEdgesCheckbox).on('change', (function () {
+	
+			var numEdges = this.numEdges;
+			if(this.simulating){
+			
+				if(numEdges < 1000){
+	
+					this.drawingEdges = this.drawEdgesCheckbox.checked;
+
+				} else if(this.drawEdgesCheckbox.checked){
+
+					var message = "Drawing more than 1000 edges is a bad idea unless you have a very fast computer.";
+					message += "\nIf you choose not to draw the edges, they will still be factored into the computation.";
+					message += "\nTo disable edge drawing, click cancel. To draw edges anyway, click OK.";
+
+					if(confirm(message)){
+	
+						this.drawingEdges = true;
+	
+					} else {
+	
+						this.drawingEdges = false;
+						this.drawEdgesCheckbox.checked = false;
+		
+					}
+			
 				}
 			
 			}
-			
-		}
 		
-	}).bind(this));
+		}).bind(this));
 	
 	}
 	
 	calculate () {
-	// TODO: reindent
 
-	var canvas = this.canvas;
-	var timeStep = 1; // 1 seems good
+		var canvas = this.canvas;
+		var timeStep = 1; // 1 seems good
 	
-	var force = {x: 0, y: 0}, forceComponent = {x: 0, y: 0};
-	var anchors = this.anchors;
-	var numVertices = this.numVertices;
-	var numEdges = this.numEdges;
+		var force = {x: 0, y: 0}, forceComponent = {x: 0, y: 0};
+		var anchors = this.anchors;
+		var numVertices = this.numVertices;
+		var numEdges = this.numEdges;
 	
-	if(numVertices < 20 && numEdges/numVertices > 0.5){
+		if(numVertices < 20 && numEdges/numVertices > 0.5){
 	
-		for(var a = 0; a < anchors.length; a++){
+			for(var a = 0; a < anchors.length; a++){
 		
-			a.mass = this.anchorMass;
+				a.mass = this.anchorMass;
 			
+			}
+		
 		}
-		
-	}
 	
-	var unitVector = {x: 0, y: 0}, distanceSquared;
+		var unitVector = {x: 0, y: 0}, distanceSquared;
 	
-	var vertex, opposingVertices, opposingVertex;
-	var vertices = this.vertices;
-	var vertexRadius = this.vertexRadius;
+		var vertex, opposingVertices, opposingVertex;
+		var vertices = this.vertices;
+		var vertexRadius = this.vertexRadius;
 	
-	for(var i = 0; i < vertices.length; i++){
+		for(var i = 0; i < vertices.length; i++){
 	
-		force.x = force.y = 0;
+			force.x = force.y = 0;
 		
-		vertex = vertices[i];
+			vertex = vertices[i];
 		
-		if(vertex.mobile){
+			if(vertex.mobile){
 		
-			// if(numVertices > 20 && this.iteration % 4 == 0){
-// 	
-// 				// calculate new position
-// 		
-// 				vertex.center.x += vertex.velocity.x*timeStep + 0.5*vertex.acceleration.x * Math.pow(timeStep, 2);
-// 				vertex.center.y += vertex.velocity.y*timeStep + 0.5*vertex.acceleration.y * Math.pow(timeStep, 2);
-// 	
-// 				return;
-// 		
-// 			}
+				// if(numVertices > 20 && this.iteration % 4 == 0){
+	// 	
+	// 				// calculate new position
+	// 		
+	// 				vertex.center.x += vertex.velocity.x*timeStep + 0.5*vertex.acceleration.x * Math.pow(timeStep, 2);
+	// 				vertex.center.y += vertex.velocity.y*timeStep + 0.5*vertex.acceleration.y * Math.pow(timeStep, 2);
+	// 	
+	// 				return;
+	// 		
+	// 			}
 		
-		// first calculate force with adjacent vertices (repulsion)
+			// first calculate force with adjacent vertices (repulsion)
 		
-			opposingVertices = vertex.adjacentVertices;
+				opposingVertices = vertex.adjacentVertices;
 	
-			for(var j = 0; j < opposingVertices.length; j++){
+				for(var j = 0; j < opposingVertices.length; j++){
 		
-				opposingVertex = opposingVertices[j];
+					opposingVertex = opposingVertices[j];
 			
-				// vector away from opposingVertex towards vertex
-				unitVector.x = vertex.center.x - opposingVertex.center.x;
-				unitVector.y = vertex.center.y - opposingVertex.center.y;
+					// vector away from opposingVertex towards vertex
+					unitVector.x = vertex.center.x - opposingVertex.center.x;
+					unitVector.y = vertex.center.y - opposingVertex.center.y;
 			
-				distanceSquared = Math.pow((vertex.center.x - opposingVertex.center.x), 2) + 
-					Math.pow((vertex.center.y - opposingVertex.center.y), 2);
-				if(distanceSquared == 0){ 
-					distanceSquared = Math.pow(10, -3);
+					distanceSquared = Math.pow((vertex.center.x - opposingVertex.center.x), 2) + 
+						Math.pow((vertex.center.y - opposingVertex.center.y), 2);
+					if(distanceSquared == 0){ 
+						distanceSquared = Math.pow(10, -3);
+					}
+					forceComponent.x = this.repulsionFactor * vertex.mass * opposingVertex.mass * unitVector.x / distanceSquared;
+					forceComponent.y = this.repulsionFactor * vertex.mass * opposingVertex.mass * unitVector.y / distanceSquared;
+					force.x += forceComponent.x;
+					force.y += forceComponent.y;
+		
 				}
-				forceComponent.x = this.repulsionFactor * vertex.mass * opposingVertex.mass * unitVector.x / distanceSquared;
-				forceComponent.y = this.repulsionFactor * vertex.mass * opposingVertex.mass * unitVector.y / distanceSquared;
-				force.x += forceComponent.x;
-				force.y += forceComponent.y;
 		
-			}
+				// then calculate force with nonadjacent vertices
 		
-			// then calculate force with nonadjacent vertices
+				opposingVertices = vertex.nonAdjacentVertices;
 		
-			opposingVertices = vertex.nonAdjacentVertices;
+				for(var j = 0; j < opposingVertices.length; j++){
 		
-			for(var j = 0; j < opposingVertices.length; j++){
+					opposingVertex = opposingVertices[j];
 		
-				opposingVertex = opposingVertices[j];
-		
-				// vector away from vertex towards opposingVertex
-				unitVector.x = opposingVertex.center.x - vertex.center.x;
-				unitVector.y = opposingVertex.center.y - vertex.center.y;
+					// vector away from vertex towards opposingVertex
+					unitVector.x = opposingVertex.center.x - vertex.center.x;
+					unitVector.y = opposingVertex.center.y - vertex.center.y;
 			
-				distanceSquared = Math.pow((vertex.center.x - opposingVertex.center.x), 2) + 
-					Math.pow((vertex.center.y - opposingVertex.center.y), 2);
-				if(distanceSquared <= 0.01){ 
-					distanceSquared = 0.01;
+					distanceSquared = Math.pow((vertex.center.x - opposingVertex.center.x), 2) + 
+						Math.pow((vertex.center.y - opposingVertex.center.y), 2);
+					if(distanceSquared <= 0.01){ 
+						distanceSquared = 0.01;
+					}
+					forceComponent.x = this.attractionFactor * vertex.mass * opposingVertex.mass * unitVector.x / distanceSquared;
+					forceComponent.y = this.attractionFactor * vertex.mass * opposingVertex.mass * unitVector.y / distanceSquared;
+					force.x += forceComponent.x;
+					force.y += forceComponent.y;
+		
 				}
-				forceComponent.x = this.attractionFactor * vertex.mass * opposingVertex.mass * unitVector.x / distanceSquared;
-				forceComponent.y = this.attractionFactor * vertex.mass * opposingVertex.mass * unitVector.y / distanceSquared;
-				force.x += forceComponent.x;
-				force.y += forceComponent.y;
 		
-			}
-		
-			vertex.acceleration.x = force.x;
-			vertex.acceleration.y = force.y;
+				vertex.acceleration.x = force.x;
+				vertex.acceleration.y = force.y;
 			
-			if(this.withWalls){
+				if(this.withWalls){
 		
-				// for collision with wall
+					// for collision with wall
 		
-				if(vertex.center.x <= 1.25*vertexRadius || vertex.center.y <= 1.25*vertexRadius || vertex.center.x >= (canvas.width - 1.25*vertexRadius) || vertex.center.y >= (canvas.height - 1.25*vertexRadius)){
+					if(vertex.center.x <= 1.25*vertexRadius || vertex.center.y <= 1.25*vertexRadius || vertex.center.x >= (canvas.width - 1.25*vertexRadius) || vertex.center.y >= (canvas.height - 1.25*vertexRadius)){
 			
-					vertex.velocity.x *= -1;
-					vertex.velocity.y *= -1;
+						vertex.velocity.x *= -1;
+						vertex.velocity.y *= -1;
 			
-				}
+					}
 				
-			}
+				}
 		
-			// calculate new position
+				// calculate new position
 		
-			vertex.center.x += vertex.velocity.x*timeStep + 0.5*vertex.acceleration.x * Math.pow(timeStep, 2);
-			vertex.center.y += vertex.velocity.y*timeStep + 0.5*vertex.acceleration.y * Math.pow(timeStep, 2);
+				vertex.center.x += vertex.velocity.x*timeStep + 0.5*vertex.acceleration.x * Math.pow(timeStep, 2);
+				vertex.center.y += vertex.velocity.y*timeStep + 0.5*vertex.acceleration.y * Math.pow(timeStep, 2);
 		
-			// calculate new velocity
+				// calculate new velocity
 		
-			vertex.velocity.x += vertex.acceleration.x*timeStep;
-			vertex.velocity.y += vertex.acceleration.y*timeStep;
+				vertex.velocity.x += vertex.acceleration.x*timeStep;
+				vertex.velocity.y += vertex.acceleration.y*timeStep;
 			
-			// imaginary friction
+				// imaginary friction
 			
-			vertex.velocity.x /= Math.max(1, ((3000 + this.iteration)/3000));
-			vertex.velocity.y /= Math.max(1, ((3000 + this.iteration)/3000));
+				vertex.velocity.x /= Math.max(1, ((3000 + this.iteration)/3000));
+				vertex.velocity.y /= Math.max(1, ((3000 + this.iteration)/3000));
 			
-			// collisions with other vertices
+				// collisions with other vertices
 			
-			// for(var k = 0; k < vertices.length; k++){
-// 			
-// 				if((vertex.center.x - vertices[k].center.x) <= 2.1*vertexRadius && (vertex.center.y - vertices[k].center.y <= 2.1*vertexRadius)){
-// 				
-// 					vertex.velocity.x *= -1;
-// 					vertex.velocity.y *= -1;
-// 					
-// 				}
-// 				
-// 			}
+				// for(var k = 0; k < vertices.length; k++){
+	// 			
+	// 				if((vertex.center.x - vertices[k].center.x) <= 2.1*vertexRadius && (vertex.center.y - vertices[k].center.y <= 2.1*vertexRadius)){
+	// 				
+	// 					vertex.velocity.x *= -1;
+	// 					vertex.velocity.y *= -1;
+	// 					
+	// 				}
+	// 				
+	// 			}
 			
-			// for collision with anchor
+				// for collision with anchor
 			
-			// for(var k = 0; k < anchors.length; k++){
-// 			
-// 				if(vertex.center.x >= (anchors[k].center.x - 2*vertexRadius) && vertex.center.x < (anchors[k].center.x + 2*vertexRadius) && vertex.center.y >= (anchors[k].center.y - 2*vertexRadius) && vertex.center.y < (anchors[k].center.y + 2*vertexRadius)){
-// 				
-// 					if(vertex.center.x < anchors[k].center.x){
-// 					
-// 						vertex.center.x = anchors[k].center.x - 2*vertexRadius;
-// 						
-// 					} else if(vertex.center.x >= anchors[k].center.x){
-// 					
-// 						vertex.center.x = anchors[k].center.x + 2*vertexRadius;
-// 						
-// 					} else if(vertex.center.y < anchors[k].center.y){
-// 					
-// 						vertex.center.y = anchors[k].center.y - 2*vertexRadius;
-// 						
-// 					} else if(vertex.center.y >= anchors[k].center.y){
-// 					
-// 						vertex.center.y = anchors[k].center.y + 2*vertexRadius;
-// 						
-// 					}
-// 
-// 				}
-// 				
-// 			}
+				// for(var k = 0; k < anchors.length; k++){
+	// 			
+	// 				if(vertex.center.x >= (anchors[k].center.x - 2*vertexRadius) && vertex.center.x < (anchors[k].center.x + 2*vertexRadius) && vertex.center.y >= (anchors[k].center.y - 2*vertexRadius) && vertex.center.y < (anchors[k].center.y + 2*vertexRadius)){
+	// 				
+	// 					if(vertex.center.x < anchors[k].center.x){
+	// 					
+	// 						vertex.center.x = anchors[k].center.x - 2*vertexRadius;
+	// 						
+	// 					} else if(vertex.center.x >= anchors[k].center.x){
+	// 					
+	// 						vertex.center.x = anchors[k].center.x + 2*vertexRadius;
+	// 						
+	// 					} else if(vertex.center.y < anchors[k].center.y){
+	// 					
+	// 						vertex.center.y = anchors[k].center.y - 2*vertexRadius;
+	// 						
+	// 					} else if(vertex.center.y >= anchors[k].center.y){
+	// 					
+	// 						vertex.center.y = anchors[k].center.y + 2*vertexRadius;
+	// 						
+	// 					}
+	// 
+	// 				}
+	// 				
+	// 			}
 			
-		} // end if(vertex.mobile)
+			} // end if(vertex.mobile)
 		
-	} // end for loop
+		} // end for loop
 
 	}
 
 	animate () {
-	// TODO: reindent
 	
-	// calculate changes	
+		// TODO: reindent
 	
-	// clear the canvas
+		// calculate changes	
+	
+		// clear the canvas
 
-	var canvas = this.canvas;
-	var context = this.context;
-	var vertices = this.vertices;
-	context.clearRect(0, 0, canvas.width, canvas.height);
+		var canvas = this.canvas;
+		var context = this.context;
+		var vertices = this.vertices;
+		context.clearRect(0, 0, canvas.width, canvas.height);
 	
-	// draw edges if checked
+		// draw edges if checked
 	
-	if(this.drawingEdges){
+		if(this.drawingEdges){
 	
-		var edges = this.edges;
-		for(var i = 0; i < edges.length; i++){
-			edges[i].render(context);
-		}
+			var edges = this.edges;
+			for(var i = 0; i < edges.length; i++){
+				edges[i].render(context);
+			}
 		
-	}
+		}
 
-	// draw vertices
+		// draw vertices
 
-	for(var i = 0; i < vertices.length; i++){
-		vertices[i].render(context);
-	}
+		for(var i = 0; i < vertices.length; i++){
+			vertices[i].render(context);
+		}
 	
-	this.calculate();
+		this.calculate();
 
-	this.animationID = window.setTimeout(this.animate.bind(this), 40);
+		this.animationID = window.setTimeout(this.animate.bind(this), 40);
 	
-	this.iteration++;
+		this.iteration++;
 	
 	}
 	
