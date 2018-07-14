@@ -125,35 +125,7 @@ class IndependentSetPhysicsSimulation {
 		
 		$(this.startSimulationButton).on('click', this.onStartSimulationButtonClick.bind(this));
 	
-		$(this.pauseSimulationButton).on('click', (function () {
-	
-			if(this.simulating){
-	
-				if(!this.paused){ // pause
-		
-					this.paused = true;
-					clearTimeout(this.animationID);
-					this.pauseSimulationButton.value = "Unpause simulation";
-			
-				} else{ // unpause
-		
-					if(this.querying){
-			
-						this.querying = false;
-						this.queryDiv.style.display = 'none';
-						this.context.putImageData(this.imageData, 0, 0);
-				
-					}
-			
-					this.animationID = window.setTimeout(this.animate.bind(this), 40);
-					this.paused = false;
-					this.pauseSimulationButton.value = "Pause simulation";
-			
-				}
-			
-			}
-		
-		}).bind(this));
+		$(this.pauseSimulationButton).on('click', this.pauseSimulation.bind(this));
 	
 		$(this.queryRegionButton).on('click', (function () {
 	
@@ -519,6 +491,34 @@ class IndependentSetPhysicsSimulation {
 			this.startSimulation();
 		} else{
 			this.stopSimulation();
+		}
+	}
+	
+	pauseSimulation () {
+		if(this.simulating){
+
+			if(!this.paused){ // pause
+	
+				this.paused = true;
+				clearTimeout(this.animationID);
+				this.pauseSimulationButton.value = "Unpause simulation";
+		
+			} else{ // unpause
+	
+				if(this.querying){
+		
+					this.querying = false;
+					this.queryDiv.style.display = 'none';
+					this.context.putImageData(this.imageData, 0, 0);
+			
+				}
+		
+				this.animationID = window.setTimeout(this.animate.bind(this), 40);
+				this.paused = false;
+				this.pauseSimulationButton.value = "Pause simulation";
+		
+			}
+		
 		}
 	}
 	
