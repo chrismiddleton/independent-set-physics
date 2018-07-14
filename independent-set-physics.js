@@ -129,37 +129,7 @@ class IndependentSetPhysicsSimulation {
 	
 		$(this.queryRegionButton).on('click', this.queryRegion.bind(this));
 	
-		$(this.drawEdgesCheckbox).on('change', (function () {
-	
-			var numEdges = this.numEdges;
-			if(this.simulating){
-			
-				if(numEdges < 1000){
-	
-					this.drawingEdges = this.drawEdgesCheckbox.checked;
-
-				} else if(this.drawEdgesCheckbox.checked){
-
-					var message = "Drawing more than 1000 edges is a bad idea unless you have a very fast computer.";
-					message += "\nIf you choose not to draw the edges, they will still be factored into the computation.";
-					message += "\nTo disable edge drawing, click cancel. To draw edges anyway, click OK.";
-
-					if(confirm(message)){
-	
-						this.drawingEdges = true;
-	
-					} else {
-	
-						this.drawingEdges = false;
-						this.drawEdgesCheckbox.checked = false;
-		
-					}
-			
-				}
-			
-			}
-		
-		}).bind(this));
+		$(this.drawEdgesCheckbox).on('change', this.toggleEdges.bind(this));
 	
 	}
 	
@@ -711,6 +681,35 @@ class IndependentSetPhysicsSimulation {
 		this.animate();
 	
 		this.startSimulationButton.value = "End simulation";
+	}
+	
+	toggleEdges () {
+		var numEdges = this.numEdges;
+		if(this.simulating){
+		
+			if(numEdges < 1000){
+
+				this.drawingEdges = this.drawEdgesCheckbox.checked;
+
+			} else if(this.drawEdgesCheckbox.checked){
+
+				var message = "Drawing more than 1000 edges is a bad idea unless you have a very fast computer.";
+				message += "\nIf you choose not to draw the edges, they will still be factored into the computation.";
+				message += "\nTo disable edge drawing, click cancel. To draw edges anyway, click OK.";
+
+				if(confirm(message)){
+
+					this.drawingEdges = true;
+
+				} else {
+
+					this.drawingEdges = false;
+					this.drawEdgesCheckbox.checked = false;
+	
+				}
+		
+			}
+		}
 	}
 	
 }
