@@ -305,6 +305,29 @@ class IndependentSetPhysicsSimulation {
 		return [anchor];
 	}
 	
+	generateEdges (vertices, numEdges) {
+		var edges = [];
+		var fromVertex, toVertex;
+		var numVertices = vertices.length;
+		for (var i = 0; i < numEdges; i++) {
+			fromVertex = Math.floor(numVertices * Math.random());
+			toVertex = Math.floor(numVertices * Math.random());
+
+			if (fromVertex < toVertex) {
+				edges.push(new Edge(vertices[fromVertex], vertices[toVertex]));
+			} else {
+				i--;
+			}
+		}
+
+		// add edges to the vertices
+		for (var edge of edges) {
+			edge.to.adjacentVertices.push(edge.from);
+			edge.from.adjacentVertices.push(edge.to);
+		}
+		return edges;
+	}
+	
 	generateVertices (numVertices, vertexRadius) {
 		var vertices = [];
 		for (var i = 0; i < numVertices; i++) {
@@ -469,26 +492,7 @@ class IndependentSetPhysicsSimulation {
 			vertices.push(anchor);
 		}
 
-		this.edges = [];
-		var edges = this.edges;
-		var fromVertex, toVertex;
-
-		for (var i = 0; i < numEdges; i++) {
-			fromVertex = Math.floor(numVertices * Math.random());
-			toVertex = Math.floor(numVertices * Math.random());
-
-			if (fromVertex < toVertex) {
-				edges.push(new Edge(vertices[fromVertex], vertices[toVertex]));
-			} else {
-				i--;
-			}
-		}
-
-		// add edges to the vertices
-		for (var edge of edges) {
-			edge.to.adjacentVertices.push(edge.from);
-			edge.from.adjacentVertices.push(edge.to);
-		}
+		var edges = this.edges = this.generateEdges(vertices, numEdges);
 
 		// calculate nonEdges
 		var allEdges = [];
