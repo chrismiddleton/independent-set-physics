@@ -35,10 +35,10 @@ p {
 #queryDiv {
 	display: none;
 	position: absolute;
-	left: 300px;
-	top: 300px;
-	width: 500px;
-	height: 350px;
+	left: 25%;
+	top: 25%;
+	width: 50%;
+	height: 50%;
 	background-color: hsla(210, 80%, 100%, 0.6);
 	-moz-filter: blur(2px);
 	-ms-filter: blur(2px);
@@ -61,4 +61,8 @@ h4 {
 }
 .immutable {
 	background-color: #c0eafc;
+}
+
+.isp-simulation-area {
+	position: relative;
 }
