@@ -130,6 +130,34 @@ class IndependentSetPhysicsSimulation {
 		$(this.drawEdgesCheckbox).on('change', this.toggleEdges.bind(this));
 	}
 	
+	animate () {
+	
+		// calculate changes
+	
+		// clear the canvas
+		var canvas = this.canvas;
+		var context = this.context;
+		var vertices = this.vertices;
+		context.clearRect(0, 0, canvas.width, canvas.height);
+	
+		// draw edges if checked
+		if (this.drawingEdges) {
+			var edges = this.edges;
+			for (var edge of edges) {
+				edge.render(context);
+			}
+		}
+
+		// draw vertices
+		for (var vertex of vertices) {
+			vertex.render(context);
+		}
+	
+		this.calculate();
+		this.animationID = window.setTimeout(this.animate.bind(this), 40);
+		this.iteration++;
+	}
+	
 	calculate () {
 		var canvas = this.canvas;
 		var timeStep = 1; // 1 seems good
@@ -266,51 +294,6 @@ class IndependentSetPhysicsSimulation {
 				}
 			} // end if(vertex.mobile)
 		} // end for loop
-	}
-
-	animate () {
-	
-		// calculate changes
-	
-		// clear the canvas
-		var canvas = this.canvas;
-		var context = this.context;
-		var vertices = this.vertices;
-		context.clearRect(0, 0, canvas.width, canvas.height);
-	
-		// draw edges if checked
-		if (this.drawingEdges) {
-			var edges = this.edges;
-			for (var edge of edges) {
-				edge.render(context);
-			}
-		}
-
-		// draw vertices
-		for (var vertex of vertices) {
-			vertex.render(context);
-		}
-	
-		this.calculate();
-		this.animationID = window.setTimeout(this.animate.bind(this), 40);
-		this.iteration++;
-	}
-	
-	stop () {
-		this.simulating = false;
-		this.startButton.value = "Start simulation";
-		clearTimeout(this.animationID);
-		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-	
-		if (this.querying) {
-			this.querying = false;
-			this.queryDiv.style.display = 'none';
-		}
-	
-		if (this.paused) {
-			this.paused = false;
-			this.pauseButton.value = "Pause simulation";
-		}
 	}
 	
 	onStartButtonClick () {
@@ -548,6 +531,23 @@ class IndependentSetPhysicsSimulation {
 
 		this.animate();
 		this.startButton.value = "End simulation";
+	}
+	
+	stop () {
+		this.simulating = false;
+		this.startButton.value = "Start simulation";
+		clearTimeout(this.animationID);
+		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	
+		if (this.querying) {
+			this.querying = false;
+			this.queryDiv.style.display = 'none';
+		}
+	
+		if (this.paused) {
+			this.paused = false;
+			this.pauseButton.value = "Pause simulation";
+		}
 	}
 	
 	toggleEdges () {
