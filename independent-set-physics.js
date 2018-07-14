@@ -496,8 +496,6 @@ class IndependentSetPhysicsSimulation {
 		}
 
 		var canvas = this.canvas;
-		var center_x = canvas.width/2;
-		var center_y = canvas.height/2;
 		var radius = canvas.height/4;
 
 		var vertexSubscript;
@@ -529,7 +527,6 @@ class IndependentSetPhysicsSimulation {
 	
 		if (this.withAnchor) {
 			// create anchors
-
 			vertices.push(new Vertex('x'));
 			vertices[vertices.length - 1].center = {x: canvas.width / 2, y: canvas.height / 2};
 			vertices[vertices.length - 1].mass = this.anchorMass;
