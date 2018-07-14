@@ -262,48 +262,45 @@ class IndependentSetPhysicsSimulation {
 				// collisions with other vertices
 				
 				if (this.collideWithVertices) {
-				// TODO: reindent
-				for(var k = 0; k < vertices.length; k++){
+					for(var k = 0; k < vertices.length; k++){
 				
-					if((vertex.center.x - vertices[k].center.x) <= 2.1*vertexRadius && (vertex.center.y - vertices[k].center.y <= 2.1*vertexRadius)){
+						if((vertex.center.x - vertices[k].center.x) <= 2.1*vertexRadius && (vertex.center.y - vertices[k].center.y <= 2.1*vertexRadius)){
 					
-						vertex.velocity.x *= -1;
-						vertex.velocity.y *= -1;
+							vertex.velocity.x *= -1;
+							vertex.velocity.y *= -1;
 						
-					}
+						}
 					
-				}
+					}
 				}
 			
 				// for collision with anchor
 				if (this.collideWithAnchors) {
-				// TODO: reindent
-				for(var k = 0; k < anchors.length; k++){
+					for(var k = 0; k < anchors.length; k++){
 				
-					if(vertex.center.x >= (anchors[k].center.x - 2*vertexRadius) && vertex.center.x < (anchors[k].center.x + 2*vertexRadius) && vertex.center.y >= (anchors[k].center.y - 2*vertexRadius) && vertex.center.y < (anchors[k].center.y + 2*vertexRadius)){
+						if(vertex.center.x >= (anchors[k].center.x - 2*vertexRadius) && vertex.center.x < (anchors[k].center.x + 2*vertexRadius) && vertex.center.y >= (anchors[k].center.y - 2*vertexRadius) && vertex.center.y < (anchors[k].center.y + 2*vertexRadius)){
 					
-						if(vertex.center.x < anchors[k].center.x){
+							if(vertex.center.x < anchors[k].center.x){
 						
-							vertex.center.x = anchors[k].center.x - 2*vertexRadius;
+								vertex.center.x = anchors[k].center.x - 2*vertexRadius;
 							
-						} else if(vertex.center.x >= anchors[k].center.x){
+							} else if(vertex.center.x >= anchors[k].center.x){
 						
-							vertex.center.x = anchors[k].center.x + 2*vertexRadius;
+								vertex.center.x = anchors[k].center.x + 2*vertexRadius;
 							
-						} else if(vertex.center.y < anchors[k].center.y){
+							} else if(vertex.center.y < anchors[k].center.y){
 						
-							vertex.center.y = anchors[k].center.y - 2*vertexRadius;
+								vertex.center.y = anchors[k].center.y - 2*vertexRadius;
 							
-						} else if(vertex.center.y >= anchors[k].center.y){
+							} else if(vertex.center.y >= anchors[k].center.y){
 						
-							vertex.center.y = anchors[k].center.y + 2*vertexRadius;
+								vertex.center.y = anchors[k].center.y + 2*vertexRadius;
 							
-						}
+							}
 	
-					}
+						}
 					
-				}
-				
+					}
 				}
 			
 			} // end if(vertex.mobile)
