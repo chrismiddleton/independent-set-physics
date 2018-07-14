@@ -13,45 +13,6 @@
 
 // getting i_2
 
-var canvas;
-var context;
-var vertices;
-var edges;
-var animationID;
-var vertexRadius;
-var paused;
-var iteration;
-var anchors;
-var numVertices;
-var numEdges;
-var numVerticesTextbox;
-var numEdgesTextbox;
-var startSimulationButton;
-var pauseSimulationButton;
-var simulating;
-var queryRegionButton;
-var regionXTextbox;
-var regionYTextbox;
-var regionRadiusTextbox;
-var imageData;
-var withAnchorCheckbox;
-var withWallsCheckbox
-var withAnchor;
-var withWalls;
-var querying;
-var queryDiv;
-var resultsDiv;
-var independenceDiv;
-var repulsionFactorTextbox;
-var attractionFactorTextbox;
-var anchorMassTextbox;
-var attractionFactor;
-var repulsionFactor;
-var drawEdgesCheckbox;
-var drawingEdges;
-var manualOverrideCheckbox;
-var anchorMass;
-
 class Vertex {
 
 	constructor (name) {
@@ -119,6 +80,45 @@ class Edge {
 	}
 	
 }
+
+var canvas;
+var context;
+var vertices;
+var edges;
+var animationID;
+var vertexRadius;
+var paused;
+var iteration;
+var anchors;
+var numVertices;
+var numEdges;
+var numVerticesTextbox;
+var numEdgesTextbox;
+var startSimulationButton;
+var pauseSimulationButton;
+var simulating;
+var queryRegionButton;
+var regionXTextbox;
+var regionYTextbox;
+var regionRadiusTextbox;
+var imageData;
+var withAnchorCheckbox;
+var withWallsCheckbox
+var withAnchor;
+var withWalls;
+var querying;
+var queryDiv;
+var resultsDiv;
+var independenceDiv;
+var repulsionFactorTextbox;
+var attractionFactorTextbox;
+var anchorMassTextbox;
+var attractionFactor;
+var repulsionFactor;
+var drawEdgesCheckbox;
+var drawingEdges;
+var manualOverrideCheckbox;
+var anchorMass;
 
 function init(){
 
