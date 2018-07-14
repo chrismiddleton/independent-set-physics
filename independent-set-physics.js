@@ -296,6 +296,36 @@ class IndependentSetPhysicsSimulation {
 		} // end for loop
 	}
 	
+	computeNonEdges (vertices, edges) {
+		var allEdges = [];
+		var nonEdges = [];
+		for (var vertex1 of vertices) {
+			var row = [];
+			for (var vertex2 of vertices) {
+				row.push(new Edge(vertex1, vertex2));
+			}
+			allEdges.push(row);
+		}
+
+		var fromVertex;
+		var toVertex;
+		for (var edge of edges) {
+			fromVertex = parseInt(edge.from.name.substring(2));
+			toVertex = parseInt(edge.to.name.substring(2));
+			allEdges[fromVertex][toVertex] = null;
+		}
+
+		for (var [i, row] of allEdges.entries()) {
+			for (var [j, edge] of row.entries()) {
+				// TODO: needs comment or change
+				if (allEdges[i][j] != null) {
+					nonEdges.push(new Edge(vertices[i], vertices[j]));
+				}
+			}
+		}
+		return nonEdges;
+	}
+	
 	generateAnchors (canvas, anchorMass) {
 		var anchor = new Vertex('x');
 		anchor.center = {x: canvas.width / 2, y: canvas.height / 2};
@@ -494,33 +524,7 @@ class IndependentSetPhysicsSimulation {
 
 		var edges = this.edges = this.generateEdges(vertices, numEdges);
 
-		// calculate nonEdges
-		var allEdges = [];
-		var nonEdges = [];
-		for (var vertex1 of vertices) {
-			var row = [];
-			for (var vertex2 of vertices) {
-				row.push(new Edge(vertex1, vertex2));
-			}
-			allEdges.push(row);
-		}
-
-		var fromVertex;
-		var toVertex;
-		for (var edge of edges) {
-			fromVertex = parseInt(edge.from.name.substring(2));
-			toVertex = parseInt(edge.to.name.substring(2));
-			allEdges[fromVertex][toVertex] = null;
-		}
-
-		for (var [i, row] of allEdges.entries()) {
-			for (var [j, edge] of row.entries()) {
-				// TODO: needs comment or change
-				if (allEdges[i][j] != null) {
-					nonEdges.push(new Edge(vertices[i], vertices[j]));
-				}
-			}
-		}
+		var nonEdges = this.computeNonEdges(vertices, edges);
 
 		// add nonAdjacentVertices for each vertex
 		for (var edge of nonEdges) {
