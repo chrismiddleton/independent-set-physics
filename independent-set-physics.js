@@ -316,6 +316,15 @@ class IndependentSetPhysicsSimulation {
 		return allEdges;
 	}
 	
+	computeNonAdjacentVertices (vertices, edges) {
+		var nonEdges = this.computeNonEdges(vertices, edges);
+		// add nonAdjacentVertices for each vertex
+		for (var edge of nonEdges) {
+			edge.to.nonAdjacentVertices.push(edge.from);
+			edge.from.nonAdjacentVertices.push(edge.to);
+		}
+	}
+	
 	computeNonEdges (vertices, edges) {
 		var allEdges = this.computeAllEdges(vertices, edges);
 		var nonEdges = [];
@@ -528,13 +537,7 @@ class IndependentSetPhysicsSimulation {
 
 		var edges = this.edges = this.generateEdges(vertices, numEdges);
 
-		var nonEdges = this.computeNonEdges(vertices, edges);
-
-		// add nonAdjacentVertices for each vertex
-		for (var edge of nonEdges) {
-			edge.to.nonAdjacentVertices.push(edge.from);
-			edge.from.nonAdjacentVertices.push(edge.to);
-		}
+		this.computeNonAdjacentVertices(vertices, edges);
 
 		this.iteration = 0;
 	
