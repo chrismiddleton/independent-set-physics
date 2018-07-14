@@ -168,27 +168,27 @@ function Edge(from, to){
 
 function init(){
 
-	canvas = document.getElementById('canvas');
+	canvas = document.getElementById('isp-canvas');
 	context = canvas.getContext('2d');
 	
-	numVerticesTextbox = document.getElementById('numVerticesTextbox');
-	numEdgesTextbox = document.getElementById('numEdgesTextbox');
-	startSimulationButton = document.getElementById('startSimulationButton');
-	pauseSimulationButton = document.getElementById('pauseSimulationButton');
-	queryRegionButton = document.getElementById('queryRegionButton');
-	regionXTextbox = document.getElementById('regionXTextbox');
-	regionYTextbox = document.getElementById('regionYTextbox');
-	regionRadiusTextbox = document.getElementById('regionRadiusTextbox');
-	withWallsCheckbox = document.getElementById('withWallsCheckbox');
-	withAnchorCheckbox = document.getElementById('withAnchorCheckbox');
-	queryDiv = document.getElementById('queryDiv');
-	resultsDiv = document.getElementById('resultsDiv');
-	independenceDiv = document.getElementById('independenceDiv');
-	attractionFactorTextbox = document.getElementById('attractionFactorTextbox');
-	repulsionFactorTextbox = document.getElementById('repulsionFactorTextbox');
-	anchorMassTextbox = document.getElementById('anchorMassTextbox');
-	drawEdgesCheckbox = document.getElementById('drawEdgesCheckbox');
-	manualOverrideCheckbox = document.getElementById('manualOverrideCheckbox');
+	numVerticesTextbox = document.getElementById('isp-num-vertices-field');
+	numEdgesTextbox = document.getElementById('isp-num-edges-field');
+	startSimulationButton = document.getElementById('isp-start-simulation-button');
+	pauseSimulationButton = document.getElementById('isp-pause-simulation-button');
+	queryRegionButton = document.getElementById('isp-query-region-button');
+	regionXTextbox = document.getElementById('isp-query-region-x-field');
+	regionYTextbox = document.getElementById('isp-query-region-y-field');
+	regionRadiusTextbox = document.getElementById('isp-query-region-radius-field');
+	withWallsCheckbox = document.getElementById('isp-walls-toggle');
+	withAnchorCheckbox = document.getElementById('isp-anchors-toggle');
+	queryDiv = document.getElementById('isp-query-popup');
+	resultsDiv = document.getElementById('isp-results-box');
+	independenceDiv = document.getElementById('isp-independence-box');
+	attractionFactorTextbox = document.getElementById('isp-attraction-factor-field');
+	repulsionFactorTextbox = document.getElementById('isp-repulsion-factor-field');
+	anchorMassTextbox = document.getElementById('isp-anchor-mass-field');
+	drawEdgesCheckbox = document.getElementById('isp-draw-edges-toggle');
+	manualOverrideCheckbox = document.getElementById('isp-manual-override-toggle');
 	
 	$(startSimulationButton).on('click', function(){
 		if(!simulating){

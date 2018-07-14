@@ -12,7 +12,7 @@
 	font-size: 0.9em;
 }
 
-.isp-canvas {
+#isp-canvas {
 	border: 2px solid rgb(125, 174, 255);
 	margin-top: 10px;
 	margin-bottom: 10px;
@@ -23,7 +23,7 @@
 	margin-bottom: 2px;
 }
 
-.isp-query-popup {
+#isp-query-popup {
 	display: none;
 	position: absolute;
 	left: 25%;
@@ -42,7 +42,7 @@
 	padding: 10px;
 }
 
-.isp-results {
+#isp-results-box {
 	overflow: auto;
 	height: 250px;
 	margin-top: 10px;

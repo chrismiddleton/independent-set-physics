@@ -11,33 +11,33 @@
 			<div class="isp-main">
 				<h2>Independent Set Physics</h2>
 				<div class="isp-buttons-line">
-					Number of vertices: <input type="text" size="3" value="100" id="numVerticesTextbox">
-					Number of edges: <input type="text" size="3" value="50" id="numEdgesTextbox">
-					With anchor <input type="checkbox" id="withAnchorCheckbox" checked>
-					With walls <input type="checkbox" id="withWallsCheckbox">
+					Number of vertices: <input type="text" size="3" value="100" id="isp-num-vertices-field">
+					Number of edges: <input type="text" size="3" value="50" id="isp-num-edges-field">
+					With anchor <input type="checkbox" id="isp-anchors-toggle" checked>
+					With walls <input type="checkbox" id="isp-walls-toggle">
 					<b>||</b>
-					x: <input type="text" value="500" size="3" id="regionXTextbox">
-					y: <input type="text" value="250" size="3" id="regionYTextbox">
-					radius: <input type="text" value="150" size="3" id="regionRadiusTextbox">
-					<input type="button" value="Query region for independent set" id="queryRegionButton">
+					x: <input type="text" value="500" size="3" id="isp-query-region-x-field">
+					y: <input type="text" value="250" size="3" id="isp-query-region-y-field">
+					radius: <input type="text" value="150" size="3" id="isp-query-region-radius-field">
+					<input type="button" value="Query region for independent set" id="isp-query-region-button">
 				</div>
 				<div class="isp-buttons-line">
-					<input type="button" value="Start simulation" id="startSimulationButton">
-					<input type="button" value="Pause simulation" id="pauseSimulationButton">
-					Draw edges? <input type="checkbox" checked value="Draw edges" id="drawEdgesCheckbox">
-					Manually set parameters? <input type="checkbox" value="" id="manualOverrideCheckbox">
-					Attraction factor: <input class="isp-immutable" type="text" value="" size="3" id="attractionFactorTextbox">
-					Repulsion factor: <input class="isp-immutable" type="text" value="" size="3" id="repulsionFactorTextbox">
-					Anchor mass: <input class="isp-immutable" type="text" value="" size="3" id="anchorMassTextbox">
+					<input type="button" value="Start simulation" id="isp-start-simulation-button">
+					<input type="button" value="Pause simulation" id="isp-pause-simulation-button">
+					Draw edges? <input type="checkbox" checked value="Draw edges" id="isp-draw-edges-toggle">
+					Manually set parameters? <input type="checkbox" value="" id="isp-manual-override-toggle">
+					Attraction factor: <input class="isp-immutable" type="text" value="" size="3" id="isp-attraction-factor-field">
+					Repulsion factor: <input class="isp-immutable" type="text" value="" size="3" id="isp-repulsion-factor-field">
+					Anchor mass: <input class="isp-immutable" type="text" value="" size="3" id="isp-anchor-mass-field">
 				</div>
 				<div id="isp-simulation-area">
-					<canvas id="canvas" class="isp-canvas" width="1011" height="500">
+					<canvas id="isp-canvas" width="1011" height="500">
 						The canvas element is not supported.
 					</canvas>
-					<div id="queryDiv" class="isp-query-popup">
+					<div id="isp-query-popup">
 					<h4>Vertices found in the query region:</h4>
-						<div id="resultsDiv" class="isp-results"></div>
-						<div id="independenceDiv"></div>
+						<div id="isp-results-box"></div>
+						<div id="isp-independence-box"></div>
 						<br />
 					(Click unpause to resume the simulation.)
 					</div>
