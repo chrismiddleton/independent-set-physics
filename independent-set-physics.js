@@ -127,100 +127,7 @@ class IndependentSetPhysicsSimulation {
 	
 		$(this.pauseSimulationButton).on('click', this.pauseSimulation.bind(this));
 	
-		$(this.queryRegionButton).on('click', (function () {
-	
-			if(!this.querying){
-	
-				if(!this.paused){
-					this.pauseSimulationButton.click();	
-				}
-		
-				var regionX = this.regionXTextbox.value;
-				var regionY = this.regionYTextbox.value;
-				var regionRadius = this.regionRadiusTextbox.value;
-				var canvas = this.canvas;
-				var context = this.context;
-		
-				this.imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-		
-				context.save();
-				context.strokeStyle = '#000';
-				context.lineWidth = 1;
-				context.beginPath();
-				context.arc(regionX, regionY, regionRadius, 0, 2*Math.PI, true);
-				context.closePath();
-				context.stroke();
-				context.restore();
-		
-				this.querying = true;
-			
-				this.queryDiv.style.display = 'block';
-			
-				var queryRegionVertices = new Array();
-			
-				var setSize = 0;
-			
-				var resultString = "";
-			
-				var vertices = this.vertices;
-			
-				for(var v = 0; v < vertices.length; v++){
-			
-					if(vertices[v].mobile){ // weeds out anchor vertices
-				
-						if(Math.pow(vertices[v].center.x - regionX, 2) + Math.pow(vertices[v].center.y - regionY, 2) < Math.pow(regionRadius, 2)){
-					
-							queryRegionVertices[v] = vertices[v];
-							setSize++;
-							resultString += (vertices[v].toString() + "<br />");
-						
-						}
-					
-					}
-				
-				}
-			
-				var edgeFound = false;
-			
-				for(var w = 0; w < queryRegionVertices.length; w++){
-			
-					if(queryRegionVertices[w] != null){
-			
-						for(var x = 0; x < queryRegionVertices[w].adjacentVertices.length; x++){
-					
-							if(queryRegionVertices[parseInt(queryRegionVertices[w].adjacentVertices[x].name.substring(2), 10)] != null){
-						
-								edgeFound = true;
-							
-								break;
-							
-							}
-						
-						}
-					
-					}
-				
-					if(edgeFound){
-						break;
-					}
-				
-				}
-			
-				if(edgeFound){
-			
-					this.independenceDiv.innerHTML = "Uh, oh! It appears that this set is not independent.";
-				
-				} else{
-			
-					this.independenceDiv.innerHTML = "Success! An independent set of size " + setSize + "! <span style='font-size: 0.6em;'><a href='http://www.thewire.com/entertainment/2012/01/target-kristen-wiigs-target-lady-approved/47866/'>I gotta get me one o' those.</a></span>";
-				
-				}
-							
-				this.resultsDiv.innerHTML = resultString;
-			
-			}
-		
-		}).bind(this));
+		$(this.queryRegionButton).on('click', this.queryRegion.bind(this));
 	
 		$(this.drawEdgesCheckbox).on('change', (function () {
 	
@@ -518,6 +425,99 @@ class IndependentSetPhysicsSimulation {
 				this.pauseSimulationButton.value = "Pause simulation";
 		
 			}
+		
+		}
+	}
+	
+	queryRegion () {
+		if(!this.querying){
+
+			if(!this.paused){
+				this.pauseSimulationButton.click();	
+			}
+	
+			var regionX = this.regionXTextbox.value;
+			var regionY = this.regionYTextbox.value;
+			var regionRadius = this.regionRadiusTextbox.value;
+			var canvas = this.canvas;
+			var context = this.context;
+	
+			this.imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+	
+			context.save();
+			context.strokeStyle = '#000';
+			context.lineWidth = 1;
+			context.beginPath();
+			context.arc(regionX, regionY, regionRadius, 0, 2*Math.PI, true);
+			context.closePath();
+			context.stroke();
+			context.restore();
+	
+			this.querying = true;
+		
+			this.queryDiv.style.display = 'block';
+		
+			var queryRegionVertices = new Array();
+		
+			var setSize = 0;
+		
+			var resultString = "";
+		
+			var vertices = this.vertices;
+		
+			for(var v = 0; v < vertices.length; v++){
+		
+				if(vertices[v].mobile){ // weeds out anchor vertices
+			
+					if(Math.pow(vertices[v].center.x - regionX, 2) + Math.pow(vertices[v].center.y - regionY, 2) < Math.pow(regionRadius, 2)){
+				
+						queryRegionVertices[v] = vertices[v];
+						setSize++;
+						resultString += (vertices[v].toString() + "<br />");
+					
+					}
+				
+				}
+			
+			}
+		
+			var edgeFound = false;
+		
+			for(var w = 0; w < queryRegionVertices.length; w++){
+		
+				if(queryRegionVertices[w] != null){
+		
+					for(var x = 0; x < queryRegionVertices[w].adjacentVertices.length; x++){
+				
+						if(queryRegionVertices[parseInt(queryRegionVertices[w].adjacentVertices[x].name.substring(2), 10)] != null){
+					
+							edgeFound = true;
+						
+							break;
+						
+						}
+					
+					}
+				
+				}
+			
+				if(edgeFound){
+					break;
+				}
+			
+			}
+		
+			if(edgeFound){
+		
+				this.independenceDiv.innerHTML = "Uh, oh! It appears that this set is not independent.";
+			
+			} else{
+		
+				this.independenceDiv.innerHTML = "Success! An independent set of size " + setSize + "! <span style='font-size: 0.6em;'><a href='http://www.thewire.com/entertainment/2012/01/target-kristen-wiigs-target-lady-approved/47866/'>I gotta get me one o' those.</a></span>";
+			
+			}
+						
+			this.resultsDiv.innerHTML = resultString;
 		
 		}
 	}
