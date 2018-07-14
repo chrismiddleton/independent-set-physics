@@ -296,6 +296,14 @@ class IndependentSetPhysicsSimulation {
 		} // end for loop
 	}
 	
+	generateVertices (numVertices, vertexRadius) {
+		var vertices = [];
+		for (var i = 0; i < numVertices; i++) {
+			vertices.push(new Vertex('V_' + i, vertexRadius));
+		}
+		return vertices;
+	}
+	
 	onStartButtonClick () {
 		if (!this.simulating) {
 			this.start();
@@ -409,14 +417,10 @@ class IndependentSetPhysicsSimulation {
 		this.numEdges = this.numEdgesTextbox.value;
 		var numEdges = this.numEdges;
 
-		this.vertices = [];
-		var vertices = this.vertices;
 		var vertexRadius = this.vertexRadius;
+		var vertices = this.vertices = this.generateVertices(this.numVertices, this.vertexRadius);
 		this.anchors = [];
 		var anchors = this.anchors;
-		for (var i = 0; i < numVertices; i++) {
-			vertices.push(new Vertex('V_' + i, vertexRadius));
-		}
 
 		var canvas = this.canvas;
 		var radius = canvas.height/4;
