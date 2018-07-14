@@ -52,21 +52,22 @@ var drawingEdges;
 var manualOverrideCheckbox;
 var anchorMass;
 
-function Vertex(name){
+class Vertex {
 
-	this.name = name;
-	this.center = {x: 0, y: 0};
-	this.acceleration = {x: 0, y: 0};
-	this.velocity = {x: 0, y: 0};
-	this.color = '#ffffff';
-	this.textCenter = {x: 0, y: 0};
-	this.adjacentVertices = new Array();
-	this.nonAdjacentVertices = new Array();
-	this.mobile = true;
-	this.mass = 1;
+	constructor (name) {
+		this.name = name;
+		this.center = {x: 0, y: 0};
+		this.acceleration = {x: 0, y: 0};
+		this.velocity = {x: 0, y: 0};
+		this.color = '#ffffff';
+		this.textCenter = {x: 0, y: 0};
+		this.adjacentVertices = new Array();
+		this.nonAdjacentVertices = new Array();
+		this.mobile = true;
+		this.mass = 1;
+	}
 	
-	this.render = function(){
-
+	render () {
 		context.save();
 		
 		context.beginPath();
@@ -89,37 +90,21 @@ function Vertex(name){
 		}
 		
 		context.restore();
-		
-	};
+	}
 	
-	this.toString = function(){
-	
+	toString () {
 		return this.name;
-		
-	};
+	}
 
 }
 
-function Edge(from, to){
+class Edge {
 
-	this.from = from;
-	this.to = to;
-	this.render = function(){
-	
-		// var angle = Math.atan2(this.to.center.x - this.from.center.x, this.to.center.y - this.from.center.y);
-// 		var fromPoint = {x: this.from.center.x + vertexRadius * Math.cos(angle), y: this.from.center.y - vertexRadius * Math.sin(angle)};
-// 		var toPoint = {x: this.to.center.x - vertexRadius * Math.cos(angle), y: this.to.center.y + vertexRadius * Math.sin(angle)};
-// 	
-// 		context.save();
-// 		
-// 		context.beginPath();
-// 		context.moveTo(fromPoint.x, fromPoint.y);
-// 		context.lineTo(toPoint.x, toPoint.y);
-// 		context.strokeStyle = '#000';
-// 		context.stroke();
-// 		
-// 		context.restore();
-
+	constructor (from, to) {
+		this.from = from;
+		this.to = to;
+	}
+	render () {
 		context.save();
 		context.beginPath();
 		context.moveTo(this.from.center.x, this.from.center.y);
@@ -127,14 +112,11 @@ function Edge(from, to){
 		context.strokeStyle = '#000';
 		context.stroke();
 		context.restore();
-		
-	};
+	}
 	
-	this.toString = function(){
-	
-		return '{from: ' + this.from.toString() + ', to: ' + this.to.toString() + '}';
-		
-	};
+	toString () {
+		return '{from: ' + this.from.toString() + ', to: ' + this.to.toString() + '}';		
+	}
 	
 }
 
