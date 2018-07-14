@@ -296,6 +296,15 @@ class IndependentSetPhysicsSimulation {
 		} // end for loop
 	}
 	
+	generateAnchors (canvas, anchorMass) {
+		var anchor = new Vertex('x');
+		anchor.center = {x: canvas.width / 2, y: canvas.height / 2};
+		anchor.mass = anchorMass;
+		anchor.mobile = false;
+		anchor.color = '#000';
+		return [anchor];
+	}
+	
 	generateVertices (numVertices, vertexRadius) {
 		var vertices = [];
 		for (var i = 0; i < numVertices; i++) {
@@ -419,8 +428,6 @@ class IndependentSetPhysicsSimulation {
 
 		var vertexRadius = this.vertexRadius;
 		var vertices = this.vertices = this.generateVertices(this.numVertices, this.vertexRadius);
-		this.anchors = [];
-		var anchors = this.anchors;
 
 		var canvas = this.canvas;
 		var radius = canvas.height/4;
@@ -453,13 +460,13 @@ class IndependentSetPhysicsSimulation {
 		}
 	
 		if (this.withAnchor) {
-			// create anchors
-			vertices.push(new Vertex('x'));
-			vertices[vertices.length - 1].center = {x: canvas.width / 2, y: canvas.height / 2};
-			vertices[vertices.length - 1].mass = this.anchorMass;
-			vertices[vertices.length - 1].mobile = false;
-			vertices[vertices.length - 1].color = '#000';
-			anchors.push(vertices[vertices.length - 1]);
+			this.anchors = this.generateAnchors(canvas, this.anchorMass);
+		} else {
+			this.anchors = [];
+		}
+		
+		for (var anchor of this.anchors) {
+			vertices.push(anchor);
 		}
 
 		this.edges = [];
