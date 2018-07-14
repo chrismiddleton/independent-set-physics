@@ -1,37 +1,29 @@
-.wrapper{
+.isp-wrapper {
 	overflow: auto;
 	background-color: white;
 	max-width: 1100px;
 	margin: 0 auto;
 	padding: 20px;
 	min-height: 600px;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-.main {
+.isp-main {
 	font-size: 0.9em;
 }
 
-html { 
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-h2 {
-	margin-top: 0px;
-	margin-bottom: 5px;
-}
-canvas {
+.isp-canvas {
 	border: 2px solid rgb(125, 174, 255);
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
-#footer {
-	text-align: center;
-	font-size: 0.75em;
-}
-p {
+
+.isp-buttons-line {
 	margin-top: 2px;
 	margin-bottom: 2px;
 }
-#queryDiv {
+
+.isp-query-popup {
 	display: none;
 	position: absolute;
 	left: 25%;
@@ -49,16 +41,15 @@ p {
 	border-radius: 5px;
 	padding: 10px;
 }
-#resultsDiv {
+
+.isp-results {
 	overflow: auto;
 	height: 250px;
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
-h4 {
-	margin-top: 0px;
-}
-.immutable {
+
+.isp-immutable {
 	background-color: #c0eafc;
 }
 

@@ -7,10 +7,10 @@
 		<link rel="stylesheet" type="text/css" href="independent-set-physics.css">
 	</head>
 	<body>
-		<div class='wrapper'>
-			<div class="main">
+		<div class="isp-wrapper">
+			<div class="isp-main">
 				<h2>Independent Set Physics</h2>
-				<p>
+				<div class="isp-buttons-line">
 					Number of vertices: <input type="text" size="3" value="100" id="numVerticesTextbox">
 					Number of edges: <input type="text" size="3" value="50" id="numEdgesTextbox">
 					With anchor <input type="checkbox" id="withAnchorCheckbox" checked>
@@ -20,23 +20,23 @@
 					y: <input type="text" value="250" size="3" id="regionYTextbox">
 					radius: <input type="text" value="150" size="3" id="regionRadiusTextbox">
 					<input type="button" value="Query region for independent set" id="queryRegionButton">
-				</p>
-				<p>
+				</div>
+				<div class="isp-buttons-line">
 					<input type="button" value="Start simulation" id="startSimulationButton">
 					<input type="button" value="Pause simulation" id="pauseSimulationButton">
 					Draw edges? <input type="checkbox" checked value="Draw edges" id="drawEdgesCheckbox">
 					Manually set parameters? <input type="checkbox" value="" id="manualOverrideCheckbox">
-					Attraction factor: <input class="immutable" type="text" value="" size="3" id="attractionFactorTextbox">
-					Repulsion factor: <input class="immutable" type="text" value="" size="3" id="repulsionFactorTextbox">
-					Anchor mass: <input class="immutable" type="text" value="" size="3" id="anchorMassTextbox">
-				</p>
+					Attraction factor: <input class="isp-immutable" type="text" value="" size="3" id="attractionFactorTextbox">
+					Repulsion factor: <input class="isp-immutable" type="text" value="" size="3" id="repulsionFactorTextbox">
+					Anchor mass: <input class="isp-immutable" type="text" value="" size="3" id="anchorMassTextbox">
+				</div>
 				<div id="isp-simulation-area">
-					<canvas id="canvas" width="1011" height="500">
+					<canvas id="canvas" class="isp-canvas" width="1011" height="500">
 						The canvas element is not supported.
 					</canvas>
-					<div id="queryDiv">
+					<div id="queryDiv" class="isp-query-popup">
 					<h4>Vertices found in the query region:</h4>
-						<div id="resultsDiv"></div>
+						<div id="resultsDiv" class="isp-results"></div>
 						<div id="independenceDiv"></div>
 						<br />
 					(Click unpause to resume the simulation.)
