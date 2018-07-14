@@ -296,9 +296,8 @@ class IndependentSetPhysicsSimulation {
 		} // end for loop
 	}
 	
-	computeNonEdges (vertices, edges) {
+	computeAllEdges (vertices, edges) {
 		var allEdges = [];
-		var nonEdges = [];
 		for (var vertex1 of vertices) {
 			var row = [];
 			for (var vertex2 of vertices) {
@@ -314,7 +313,12 @@ class IndependentSetPhysicsSimulation {
 			toVertex = parseInt(edge.to.name.substring(2));
 			allEdges[fromVertex][toVertex] = null;
 		}
-
+		return allEdges;
+	}
+	
+	computeNonEdges (vertices, edges) {
+		var allEdges = this.computeAllEdges(vertices, edges);
+		var nonEdges = [];
 		for (var [i, row] of allEdges.entries()) {
 			for (var [j, edge] of row.entries()) {
 				// TODO: needs comment or change
