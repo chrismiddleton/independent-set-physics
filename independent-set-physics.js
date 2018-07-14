@@ -223,13 +223,10 @@ function init(){
 			var maxColor = parseInt('ffffff', 16);
 	
 			for(var i = 0; i < numVertices; i++){
-				// vertices[i].center = {x: center_x + radius*Math.cos(i*(2*Math.PI/numVertices)), 
-		// 							  y: center_y - radius*Math.sin(i*(2*Math.PI/numVertices))}; // circular arrangement
 				vertices[i].center = {x: (Math.random()*canvas.width) + 1, y: (Math.random()*canvas.height) + 1};
 				vertices[i].center.x = Math.max(20, Math.min((canvas.width - 20), vertices[i].center.x));
 				vertices[i].center.y = Math.max(20, Math.min((canvas.height - 20), vertices[i].center.y));
 				vertexSubscript = parseInt(vertices[i].name.substring(2), 10);
-		// 		console.log(vertexSubscript);
 				vertices[i].color = 'hsl(' + (vertexSubscript * 360/numVertices) + ', 100%, 75%)';
 			}
 			
@@ -267,9 +264,7 @@ function init(){
 			}
 	
 			edges = new Array();
-	
-			console.log(edges.toString());
-	
+		
 			var fromVertex, toVertex;
 	
 			for(var i = 0; i < numEdges; i++){
@@ -288,9 +283,7 @@ function init(){
 				}
 		
 			}
-	
-			console.log(edges.toString());
-	
+		
 			// add edges to the vertices
 	
 			for(var i = 0; i < edges.length; i++){
@@ -735,8 +728,6 @@ function calculate(){
 } // function calculate()
 
 function animate(){
-
-// 	console.log("animating");
 	
 	// calculate changes	
 	
