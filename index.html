@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Independent Set Physics</title>
+		<link rel="stylesheet" type="text/css" href="main.css" >
+		<script src="independent-set-physics.js"></script>
+		<style>
+			html { 
+				font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+			}
+			h2 {
+				margin-top: 0px;
+				margin-bottom: 5px;
+			}
+			canvas {
+				border: 2px solid rgb(125, 174, 255);
+				margin-top: 10px;
+				margin-bottom: 10px;
+			}
+			#footer {
+				text-align: center;
+				font-size: 0.75em;
+			}
+			p {
+				margin-top: 2px;
+				margin-bottom: 2px;
+			}
+			#queryDiv {
+				display: none;
+				position: absolute;
+				left: 300px;
+				top: 300px;
+				width: 500px;
+				height: 350px;
+				background-color: hsla(210, 80%, 100%, 0.6);
+				-moz-filter: blur(2px);
+				-ms-filter: blur(2px);
+				-o-filter: blur(2px);
+				-moz-border-radius: 5px;
+				-webkit-border-radius: 5px;
+				-ms-border-radius: 5px;
+				-o-border-radius: 5px;
+				border-radius: 5px;
+				padding: 10px;
+			}
+			#resultsDiv {
+				overflow: auto;
+				height: 250px;
+				margin-top: 10px;
+				margin-bottom: 10px;
+			}
+			h4 {
+				margin-top: 0px;
+			}
+			.immutable {
+				background-color: #c0eafc;
+			}
+		</style>
+	</head>
+	<body onload="init()">
+	<div class="wrapper">
+		<div class="main">
+			<div id="wrapper">
+				<h2>Independent Set Physics</h2>
+				<p>
+					Number of vertices: <input type="text" size="3" value="100" id="numVerticesTextbox">
+					Number of edges: <input type="text" size="3" value="50" id="numEdgesTextbox">
+					With anchor <input type="checkbox" id="withAnchorCheckbox" checked>
+					With walls <input type="checkbox" id="withWallsCheckbox">
+					<b>||</b>
+					x: <input type="text" value="500" size="3" id="regionXTextbox">
+					y: <input type="text" value="250" size="3" id="regionYTextbox">
+					radius: <input type="text" value="150" size="3" id="regionRadiusTextbox">
+					<input type="button" value="Query region for independent set" id="queryRegionButton">
+				</p>
+				<p>
+					<input type="button" value="Start simulation" id="startSimulationButton">
+					<input type="button" value="Pause simulation" id="pauseSimulationButton">
+					Draw edges? <input type="checkbox" checked value="Draw edges" id="drawEdgesCheckbox">
+					Manually set parameters? <input type="checkbox" value="" id="manualOverrideCheckbox">
+					Attraction factor: <input class="immutable" type="text" value="" size="3" id="attractionFactorTextbox">
+					Repulsion factor: <input class="immutable" type="text" value="" size="3" id="repulsionFactorTextbox">
+					Anchor mass: <input class="immutable" type="text" value="" size="3" id="anchorMassTextbox">
+				</p>
+				<canvas id="canvas" width="1011" height="500">
+					The canvas element is not supported.
+				</canvas>
+				<div id="queryDiv">
+				<h4>Vertices found in the query region:</h4>
+					<div id="resultsDiv"></div>
+					<div id="independenceDiv"></div>
+					<br />
+				(Click unpause to resume the simulation.)
+				</div>
+		</div>
+	 </div></body>
+</html>

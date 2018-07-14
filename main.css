@@ -1,0 +1,192 @@
+/* reset browser styles (from CSS3: The Missing Manual by D. S. MacFarland) */
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, 
+acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp,small, strike, strong, 
+sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+}
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1.2;
+}
+ol { 
+	padding-left: 1.4em;
+	list-style: decimal;
+}
+ul {
+	padding-left: 1.4em;
+	list-style: disk;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+} 
+
+/* end reset browser styles */
+
+html {
+	background-color: white;
+	background-repeat: repeat-x;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	padding: 0 0px;
+}
+
+p {
+	margin: 5px 0;
+}
+.wrapper{
+	overflow: auto;
+	background-color: white;
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 20px;
+	min-height: 600px;
+}
+.footer {
+	width: 1000px;
+	margin: 10px auto;
+	padding: 10px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	font-size: 0.7em;
+	text-align: center;
+}
+
+.banner{
+	padding-bottom: 5px;
+}
+.banner h1 {
+	font-weight: normal;
+	font-size: 2em;
+}
+.banner h2 {
+	font-weight: normal;
+	font-size: 1em;
+	color: #888;
+}
+.nav {
+	padding: 5px 0; /* was 5px 0 */
+/* 		border: 1px dotted #666; */
+	border-left: none;
+	border-right: none;
+	margin-bottom: 5px;
+}
+.nav ul {
+	margin: 0;
+	padding: 0;
+/* 	text-align: center; */
+}
+.nav li {
+	display: inline-block;
+	padding: 0;
+	list-style: none;
+	width: 123.25px;
+/* 	min-width: 100px; */
+}
+.nav a {
+	width: 99%;
+	text-align: center;
+	color: white;
+	display: inline-block;
+	text-decoration: none;
+	background: url(images/homepage-button.png) repeat-x;
+	border-radius: 3px;
+	padding: 3px 0px;
+	box-shadow: 2px 2px 3px #666;
+	text-shadow: 1px 1px 0 #000;
+}
+.nav a:hover{
+/* 		text-decoration: underline; */
+	background: url(images/homepage.png) repeat-x;
+	box-shadow: 0 0 3px #aaa;
+}
+.main {
+	font-size: 0.9em;
+	margin-top: 15px;
+}
+.main figure {
+	float: right;
+	display: inline;
+/* 	margin: 0px 3px; */
+	margin-left: 30px;
+	margin-bottom: 50px;
+	/* border: 3px solid #569; */
+	border-radius: 3px;
+	padding: 5px;
+	box-shadow: 1px 1px 5px #666;
+}
+.main figure img{
+	padding: 5px;
+}
+.main figure img:hover{
+	box-shadow: 0 0 15px #a80;
+}
+.main figure figcaption {
+	padding: 5px;
+	text-align: center;
+}
+
+.main h3 {
+	margin: 5px 0;
+	color: #444;
+}
+
+.main h3.question {
+	padding: 5px 0 5px 0;
+	background-image: url(images/questionmark.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+	padding-left: 35px;
+	background-size: 20px 20px;
+}
+
+.main h3.contact {
+	padding: 5px 0 5px 0;
+	background-image: url(images/contact.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+	padding-left: 35px;
+}
+
+.aside {
+	font-size: 0.8em;
+}
+
+.highlight {
+	border-bottom: 2px solid lightblue;
+}
+
+.tooltip {
+	border-bottom: 1px dotted #666;
+}
+
+.main a, .main a:link, .main a:hover, .footer a, .footer a:link, .footer a:hover {
+	color: dodgerblue;
+}
+.main a:visited, .footer a:visited {
+	color: #7898DE;
+}
+
+table {
+	
+	margin-top: 10px;
+	margin-bottom: 10px;
+	
+}
+
+hr {
+	 
+	margin-top: 15px; 
+	margin-bottom: 10px;
+	border: none;
+	border-top: 1px dotted #666;
+	
+}
