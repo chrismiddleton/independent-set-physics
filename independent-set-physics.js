@@ -185,7 +185,7 @@ class IndependentSetPhysicsSimulation {
 		this.collideWithAnchors = false;
 		
 		$(this.startSimulationButton).on('click', this.onStartSimulationButtonClick.bind(this));
-		$(this.pauseSimulationButton).on('click', this.pauseSimulation.bind(this));
+		$(this.pauseSimulationButton).on('click', this.onPauseButtonClick.bind(this));
 		$(this.queryRegionButton).on('click', this.queryRegion.bind(this));
 		$(this.drawEdgesCheckbox).on('change', this.toggleEdges.bind(this));
 	}
@@ -382,7 +382,7 @@ class IndependentSetPhysicsSimulation {
 		}
 	}
 	
-	pauseSimulation () {
+	onPauseButtonClick () {
 		if (this.simulating) {
 			if (!this.paused) { // pause
 				this.paused = true;
