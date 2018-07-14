@@ -52,34 +52,6 @@ var drawingEdges;
 var manualOverrideCheckbox;
 var anchorMass;
 
-Array.prototype.toString = function(){
-	
-		var s = "[";
-	
-		if(this.length > 0){
-			if(this[0] == null){
-				s += " ";
-			} else {
-				s += this[0].toString();
-			}
-			for(var i = 1; i < this.length; i++){
-				if(this[i] == null){
-			
-					s += ", ";
-				
-				} else {
-			
-					s += ", " + this[i].toString();
-				
-				}
-			}
-		}
-		s += "]";
-	
-		return s;
-	
-};
-
 function Vertex(name){
 
 	this.name = name;
