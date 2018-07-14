@@ -156,8 +156,8 @@ class IndependentSetPhysicsSimulation {
 		this.numEdges = 0;
 		this.numVerticesTextbox = document.getElementById('isp-num-vertices-field');
 		this.numEdgesTextbox = document.getElementById('isp-num-edges-field');
-		this.startSimulationButton = document.getElementById('isp-start-simulation-button');
-		this.pauseSimulationButton = document.getElementById('isp-pause-simulation-button');
+		this.startButton = document.getElementById('isp-start-simulation-button');
+		this.pauseButton = document.getElementById('isp-pause-simulation-button');
 		this.simulating = false;
 		this.queryRegionButton = document.getElementById('isp-query-region-button');
 		this.regionXTextbox = document.getElementById('isp-query-region-x-field');;
@@ -184,8 +184,8 @@ class IndependentSetPhysicsSimulation {
 		this.collideWithVertices = false;
 		this.collideWithAnchors = false;
 		
-		$(this.startSimulationButton).on('click', this.onStartSimulationButtonClick.bind(this));
-		$(this.pauseSimulationButton).on('click', this.onPauseButtonClick.bind(this));
+		$(this.startButton).on('click', this.onStartButtonClick.bind(this));
+		$(this.pauseButton).on('click', this.onPauseButtonClick.bind(this));
 		$(this.queryRegionButton).on('click', this.queryRegion.bind(this));
 		$(this.drawEdgesCheckbox).on('change', this.toggleEdges.bind(this));
 	}
@@ -357,9 +357,9 @@ class IndependentSetPhysicsSimulation {
 		this.iteration++;
 	}
 	
-	stopSimulation () {
+	stop () {
 		this.simulating = false;
-		this.startSimulationButton.value = "Start simulation";
+		this.startButton.value = "Start simulation";
 		clearTimeout(this.animationID);
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	
@@ -370,15 +370,15 @@ class IndependentSetPhysicsSimulation {
 	
 		if (this.paused) {
 			this.paused = false;
-			this.pauseSimulationButton.value = "Pause simulation";
+			this.pauseButton.value = "Pause simulation";
 		}
 	}
 	
-	onStartSimulationButtonClick () {
+	onStartButtonClick () {
 		if (!this.simulating) {
-			this.startSimulation();
+			this.start();
 		} else {
-			this.stopSimulation();
+			this.stop();
 		}
 	}
 	
@@ -394,13 +394,13 @@ class IndependentSetPhysicsSimulation {
 	pause () {
 		this.paused = true;
 		clearTimeout(this.animationID);
-		this.pauseSimulationButton.value = "Unpause simulation";
+		this.pauseButton.value = "Unpause simulation";
 	}
 	
 	queryRegion () {
 		if (!this.querying) {
 			if (!this.paused) {
-				this.pauseSimulationButton.click();	
+				this.pauseButton.click();	
 			}
 	
 			var regionX = this.regionXTextbox.value;
@@ -471,10 +471,10 @@ class IndependentSetPhysicsSimulation {
 
 		this.animationID = window.setTimeout(this.animate.bind(this), 40);
 		this.paused = false;
-		this.pauseSimulationButton.value = "Pause simulation";
+		this.pauseButton.value = "Pause simulation";
 	}
 	
-	startSimulation () {
+	start () {
 		if (this.querying) {
 			this.queryDiv.style.display = 'none';
 			this.querying = false;
@@ -610,7 +610,7 @@ class IndependentSetPhysicsSimulation {
 		}
 
 		this.animate();
-		this.startSimulationButton.value = "End simulation";
+		this.startButton.value = "End simulation";
 	}
 	
 	toggleEdges () {
