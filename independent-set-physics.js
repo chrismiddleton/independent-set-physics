@@ -123,222 +123,7 @@ class IndependentSetPhysicsSimulation {
 		this.manualOverrideCheckbox = document.getElementById('isp-manual-override-toggle');
 		this.anchorMass = 0;
 		
-		$(this.startSimulationButton).on('click', (function () {
-			if(!this.simulating){
-		
-				if(this.querying){
-			
-					this.queryDiv.style.display = 'none';
-					this.querying = false;
-				
-				}
-	
-				this.simulating = true;
-	
-				this.numVertices = this.numVerticesTextbox.value;
-				var numVertices = this.numVertices;
-				this.numEdges = this.numEdgesTextbox.value;
-				var numEdges = this.numEdges;
-	
-				this.vertices = new Array();
-				var vertices = this.vertices;
-				var vertexRadius = this.vertexRadius;
-				this.anchors = new Array();
-				var anchors = this.anchors;
-				for(var i = 0; i < numVertices; i++){
-	
-					vertices.push(new Vertex('V_' + i, vertexRadius));
-		
-				}
-	
-				var canvas = this.canvas;
-				var center_x = canvas.width/2;
-				var center_y = canvas.height/2;
-				var radius = canvas.height/4;
-	
-				var vertexSubscript;
-				var maxColor = parseInt('ffffff', 16);
-	
-				for(var i = 0; i < numVertices; i++){
-					vertices[i].center = {x: (Math.random()*canvas.width) + 1, y: (Math.random()*canvas.height) + 1};
-					vertices[i].center.x = Math.max(20, Math.min((canvas.width - 20), vertices[i].center.x));
-					vertices[i].center.y = Math.max(20, Math.min((canvas.height - 20), vertices[i].center.y));
-					vertexSubscript = parseInt(vertices[i].name.substring(2), 10);
-					vertices[i].color = 'hsl(' + (vertexSubscript * 360/numVertices) + ', 100%, 75%)';
-				}
-			
-				this.withAnchor = this.withAnchorCheckbox.checked;
-				this.withWalls = this.withWallsCheckbox.checked;
-			
-				if(this.manualOverrideCheckbox.checked){
-			
-					this.attractionFactor = this.attractionFactorTextbox.value;
-					this.repulsionFactor = this.repulsionFactorTextbox.value;
-					this.anchorMass = this.anchorMassTextbox.value;
-				
-				} else{
-			
-					this.anchorMass = 4;
-					this.attractionFactor = 1;
-					this.repulsionFactor = 1.5*numVertices*Math.max(1.5, Math.min(1.5, numVertices/numEdges));
-					this.repulsionFactorTextbox.value = this.repulsionFactor;
-					this.attractionFactorTextbox.value = this.attractionFactor;
-					this.anchorMassTextbox.value = this.anchorMass;
-				
-				}
-			
-				if(this.withAnchor){
-	
-				// create anchors
-	
-					vertices.push(new Vertex('x'));
-					vertices[vertices.length - 1].center = {x: canvas.width/2, y: canvas.height/2};
-					vertices[vertices.length - 1].mass = this.anchorMass;
-					vertices[vertices.length - 1].mobile = false;
-					vertices[vertices.length - 1].color = '#000';
-					anchors.push(vertices[vertices.length - 1]);
-				
-				}
-	
-				this.edges = new Array();
-				var edges = this.edges;
-		
-				var fromVertex, toVertex;
-	
-				for(var i = 0; i < numEdges; i++){
-	
-					fromVertex = Math.floor(numVertices * Math.random());
-					toVertex = Math.floor(numVertices * Math.random());
-		
-					if(fromVertex < toVertex){
-		
-						edges.push(new Edge(vertices[fromVertex], vertices[toVertex]));
-			
-					} else{
-		
-						i--;
-			
-					}
-		
-				}
-		
-				// add edges to the vertices
-	
-				for(var i = 0; i < edges.length; i++){
-		
-					edges[i].to.adjacentVertices.push(edges[i].from);
-					edges[i].from.adjacentVertices.push(edges[i].to);
-		
-				}
-	
-				// calculate nonEdges
-	
-				var allEdges = new Array();
-	
-				var nonEdges = new Array();
-	
-				for(var i = 0; i < vertices.length; i++){
-	
-					var row = new Array();
-	
-					for(var j = 0; j < vertices.length; j++){
-		
-						row.push(new Edge(vertices[i], vertices[j]));
-			
-					}
-		
-					allEdges.push(row);
-		
-				}
-	
-				var fromVertex;
-				var toVertex;
-	
-				for(var i = 0; i < edges.length; i++){
-	
-					fromVertex = parseInt(edges[i].from.name.substring(2));
-					toVertex = parseInt(edges[i].to.name.substring(2));
-	
-					allEdges[fromVertex][toVertex] = null;
-		
-				}
-	
-				for(var i = 0; i < allEdges.length; i++){
-	
-					for(var j = 0; j < allEdges[i].length; j++){
-		
-						if(allEdges[i][j] != null){
-			
-							nonEdges.push(new Edge(vertices[i], vertices[j]));
-				
-						}
-			
-					}
-		
-				}
-	
-				// add nonAdjacentVertices for each vertex
-	
-				for(var i = 0; i < nonEdges.length; i++){
-	
-					nonEdges[i].to.nonAdjacentVertices.push(nonEdges[i].from);
-					nonEdges[i].from.nonAdjacentVertices.push(nonEdges[i].to);
-		
-				}
-	
-				this.iteration = 0;
-			
-				if(numEdges < 1000){
-	
-					this.drawingEdges = this.drawEdgesCheckbox.checked;
-		
-				} else if(this.drawEdgesCheckbox.checked){
-	
-					var message = "Drawing more than 1000 edges is a bad idea unless you have a very fast computer.";
-					message += "\nIf you choose not to draw the edges, they will still be factored into the computation.";
-					message += "\nTo disable edge drawing, click cancel. To draw edges anyway, click OK.";
-	
-					if(confirm(message)){
-				
-						this.drawingEdges = true;
-				
-					} else {
-				
-						this.drawingEdges = false;
-						this.drawEdgesCheckbox.checked = false;
-					
-					}
-				
-				}
-	
-				this.animate();
-			
-				this.startSimulationButton.value = "End simulation";
-			
-			} else{
-		
-				this.simulating = false;
-				this.startSimulationButton.value = "Start simulation";
-				clearTimeout(this.animationID);
-				this.context.clearRect(0, 0, canvas.width, canvas.height);
-			
-				if(this.querying){
-			
-					this.querying = false;
-					this.queryDiv.style.display = 'none';
-				
-				}
-			
-				if(this.paused){
-			
-					this.paused = false;
-					this.pauseSimulationButton.value = "Pause simulation";
-				
-				}
-			
-			}
-		
-		}).bind(this));
+		$(this.startSimulationButton).on('click', this.onStartSimulationButtonClick.bind(this));
 	
 		$(this.pauseSimulationButton).on('click', (function () {
 	
@@ -706,6 +491,226 @@ class IndependentSetPhysicsSimulation {
 	
 		this.iteration++;
 	
+	}
+	
+	stopSimulation () {
+		this.simulating = false;
+		this.startSimulationButton.value = "Start simulation";
+		clearTimeout(this.animationID);
+		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	
+		if(this.querying){
+	
+			this.querying = false;
+			this.queryDiv.style.display = 'none';
+		
+		}
+	
+		if(this.paused){
+	
+			this.paused = false;
+			this.pauseSimulationButton.value = "Pause simulation";
+		
+		}
+	}
+	
+	onStartSimulationButtonClick () {
+		if(!this.simulating){
+			this.startSimulation();
+		} else{
+			this.stopSimulation();
+		}
+	}
+	
+	startSimulation () {
+		if(this.querying){
+	
+			this.queryDiv.style.display = 'none';
+			this.querying = false;
+		
+		}
+
+		this.simulating = true;
+
+		this.numVertices = this.numVerticesTextbox.value;
+		var numVertices = this.numVertices;
+		this.numEdges = this.numEdgesTextbox.value;
+		var numEdges = this.numEdges;
+
+		this.vertices = new Array();
+		var vertices = this.vertices;
+		var vertexRadius = this.vertexRadius;
+		this.anchors = new Array();
+		var anchors = this.anchors;
+		for(var i = 0; i < numVertices; i++){
+
+			vertices.push(new Vertex('V_' + i, vertexRadius));
+
+		}
+
+		var canvas = this.canvas;
+		var center_x = canvas.width/2;
+		var center_y = canvas.height/2;
+		var radius = canvas.height/4;
+
+		var vertexSubscript;
+		var maxColor = parseInt('ffffff', 16);
+
+		for(var i = 0; i < numVertices; i++){
+			vertices[i].center = {x: (Math.random()*canvas.width) + 1, y: (Math.random()*canvas.height) + 1};
+			vertices[i].center.x = Math.max(20, Math.min((canvas.width - 20), vertices[i].center.x));
+			vertices[i].center.y = Math.max(20, Math.min((canvas.height - 20), vertices[i].center.y));
+			vertexSubscript = parseInt(vertices[i].name.substring(2), 10);
+			vertices[i].color = 'hsl(' + (vertexSubscript * 360/numVertices) + ', 100%, 75%)';
+		}
+	
+		this.withAnchor = this.withAnchorCheckbox.checked;
+		this.withWalls = this.withWallsCheckbox.checked;
+	
+		if(this.manualOverrideCheckbox.checked){
+	
+			this.attractionFactor = this.attractionFactorTextbox.value;
+			this.repulsionFactor = this.repulsionFactorTextbox.value;
+			this.anchorMass = this.anchorMassTextbox.value;
+		
+		} else{
+	
+			this.anchorMass = 4;
+			this.attractionFactor = 1;
+			this.repulsionFactor = 1.5*numVertices*Math.max(1.5, Math.min(1.5, numVertices/numEdges));
+			this.repulsionFactorTextbox.value = this.repulsionFactor;
+			this.attractionFactorTextbox.value = this.attractionFactor;
+			this.anchorMassTextbox.value = this.anchorMass;
+		
+		}
+	
+		if(this.withAnchor){
+
+		// create anchors
+
+			vertices.push(new Vertex('x'));
+			vertices[vertices.length - 1].center = {x: canvas.width/2, y: canvas.height/2};
+			vertices[vertices.length - 1].mass = this.anchorMass;
+			vertices[vertices.length - 1].mobile = false;
+			vertices[vertices.length - 1].color = '#000';
+			anchors.push(vertices[vertices.length - 1]);
+		
+		}
+
+		this.edges = new Array();
+		var edges = this.edges;
+
+		var fromVertex, toVertex;
+
+		for(var i = 0; i < numEdges; i++){
+
+			fromVertex = Math.floor(numVertices * Math.random());
+			toVertex = Math.floor(numVertices * Math.random());
+
+			if(fromVertex < toVertex){
+
+				edges.push(new Edge(vertices[fromVertex], vertices[toVertex]));
+	
+			} else{
+
+				i--;
+	
+			}
+
+		}
+
+		// add edges to the vertices
+
+		for(var i = 0; i < edges.length; i++){
+
+			edges[i].to.adjacentVertices.push(edges[i].from);
+			edges[i].from.adjacentVertices.push(edges[i].to);
+
+		}
+
+		// calculate nonEdges
+
+		var allEdges = new Array();
+
+		var nonEdges = new Array();
+
+		for(var i = 0; i < vertices.length; i++){
+
+			var row = new Array();
+
+			for(var j = 0; j < vertices.length; j++){
+
+				row.push(new Edge(vertices[i], vertices[j]));
+	
+			}
+
+			allEdges.push(row);
+
+		}
+
+		var fromVertex;
+		var toVertex;
+
+		for(var i = 0; i < edges.length; i++){
+
+			fromVertex = parseInt(edges[i].from.name.substring(2));
+			toVertex = parseInt(edges[i].to.name.substring(2));
+
+			allEdges[fromVertex][toVertex] = null;
+
+		}
+
+		for(var i = 0; i < allEdges.length; i++){
+
+			for(var j = 0; j < allEdges[i].length; j++){
+
+				if(allEdges[i][j] != null){
+	
+					nonEdges.push(new Edge(vertices[i], vertices[j]));
+		
+				}
+	
+			}
+
+		}
+
+		// add nonAdjacentVertices for each vertex
+
+		for(var i = 0; i < nonEdges.length; i++){
+
+			nonEdges[i].to.nonAdjacentVertices.push(nonEdges[i].from);
+			nonEdges[i].from.nonAdjacentVertices.push(nonEdges[i].to);
+
+		}
+
+		this.iteration = 0;
+	
+		if(numEdges < 1000){
+
+			this.drawingEdges = this.drawEdgesCheckbox.checked;
+
+		} else if(this.drawEdgesCheckbox.checked){
+
+			var message = "Drawing more than 1000 edges is a bad idea unless you have a very fast computer.";
+			message += "\nIf you choose not to draw the edges, they will still be factored into the computation.";
+			message += "\nTo disable edge drawing, click cancel. To draw edges anyway, click OK.";
+
+			if(confirm(message)){
+		
+				this.drawingEdges = true;
+		
+			} else {
+		
+				this.drawingEdges = false;
+				this.drawEdgesCheckbox.checked = false;
+			
+			}
+		
+		}
+
+		this.animate();
+	
+		this.startSimulationButton.value = "End simulation";
 	}
 	
 }
