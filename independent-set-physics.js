@@ -214,9 +214,8 @@ class IndependentSetPhysicsSimulation {
 		var vertices = this.vertices;
 		var vertexRadius = this.vertexRadius;
 	
-		for (var i = 0; i < vertices.length; i++) {
+		for (var vertex of vertices) {
 			force.x = force.y = 0;
-			vertex = vertices[i];
 			if (vertex.mobile) {
 		
 				// first calculate force with adjacent vertices (repulsion)
@@ -342,14 +341,14 @@ class IndependentSetPhysicsSimulation {
 		// draw edges if checked
 		if (this.drawingEdges) {
 			var edges = this.edges;
-			for (var i = 0; i < edges.length; i++) {
-				edges[i].render(context);
+			for (var edge of edges) {
+				edge.render(context);
 			}
 		}
 
 		// draw vertices
-		for (var i = 0; i < vertices.length; i++) {
-			vertices[i].render(context);
+		for (var vertex of vertices) {
+			vertex.render(context);
 		}
 	
 		this.calculate();
@@ -504,12 +503,12 @@ class IndependentSetPhysicsSimulation {
 		var vertexSubscript;
 		var maxColor = parseInt('ffffff', 16);
 
-		for (var i = 0; i < numVertices; i++) {
-			vertices[i].center = {x: (Math.random() * canvas.width) + 1, y: (Math.random() * canvas.height) + 1};
-			vertices[i].center.x = Math.max(20, Math.min((canvas.width - 20), vertices[i].center.x));
-			vertices[i].center.y = Math.max(20, Math.min((canvas.height - 20), vertices[i].center.y));
-			vertexSubscript = parseInt(vertices[i].name.substring(2), 10);
-			vertices[i].color = 'hsl(' + (vertexSubscript * (360 / numVertices)) + ', 100%, 75%)';
+		for (var vertex of vertices) {
+			vertex.center = {x: (Math.random() * canvas.width) + 1, y: (Math.random() * canvas.height) + 1};
+			vertex.center.x = Math.max(20, Math.min((canvas.width - 20), vertex.center.x));
+			vertex.center.y = Math.max(20, Math.min((canvas.height - 20), vertex.center.y));
+			vertexSubscript = parseInt(vertex.name.substring(2), 10);
+			vertex.color = 'hsl(' + (vertexSubscript * (360 / numVertices)) + ', 100%, 75%)';
 		}
 	
 		this.withAnchor = this.withAnchorCheckbox.checked;
@@ -555,32 +554,33 @@ class IndependentSetPhysicsSimulation {
 		}
 
 		// add edges to the vertices
-		for (var i = 0; i < edges.length; i++) {
-			edges[i].to.adjacentVertices.push(edges[i].from);
-			edges[i].from.adjacentVertices.push(edges[i].to);
+		for (var edge of edges) {
+			edge.to.adjacentVertices.push(edge.from);
+			edge.from.adjacentVertices.push(edge.to);
 		}
 
 		// calculate nonEdges
 		var allEdges = [];
 		var nonEdges = [];
-		for (var i = 0; i < vertices.length; i++) {
+		for (var vertex1 of vertices) {
 			var row = [];
-			for (var j = 0; j < vertices.length; j++) {
-				row.push(new Edge(vertices[i], vertices[j]));
+			for (var vertex2 of vertices) {
+				row.push(new Edge(vertex1, vertex2));
 			}
 			allEdges.push(row);
 		}
 
 		var fromVertex;
 		var toVertex;
-		for (var i = 0; i < edges.length; i++) {
-			fromVertex = parseInt(edges[i].from.name.substring(2));
-			toVertex = parseInt(edges[i].to.name.substring(2));
+		for (var edge of edges) {
+			fromVertex = parseInt(edge.from.name.substring(2));
+			toVertex = parseInt(edge.to.name.substring(2));
 			allEdges[fromVertex][toVertex] = null;
 		}
 
-		for (var i = 0; i < allEdges.length; i++) {
-			for (var j = 0; j < allEdges[i].length; j++) {
+		for (var [i, row] of allEdges.entries()) {
+			for (var [j, edge] of row.entries()) {
+				// TODO: needs comment or change
 				if (allEdges[i][j] != null) {
 					nonEdges.push(new Edge(vertices[i], vertices[j]));
 				}
@@ -588,9 +588,9 @@ class IndependentSetPhysicsSimulation {
 		}
 
 		// add nonAdjacentVertices for each vertex
-		for (var i = 0; i < nonEdges.length; i++) {
-			nonEdges[i].to.nonAdjacentVertices.push(nonEdges[i].from);
-			nonEdges[i].from.nonAdjacentVertices.push(nonEdges[i].to);
+		for (var edge of nonEdges) {
+			edge.to.nonAdjacentVertices.push(edge.from);
+			edge.from.nonAdjacentVertices.push(edge.to);
 		}
 
 		this.iteration = 0;
