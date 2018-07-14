@@ -11,6 +11,66 @@
  * and make sure the repulsionFactor is large enough to counteract that.
 **/
 
+function decToHex (number) {
+	var hexDigits = [];
+	var quotient;
+	var remainder;
+	
+	while (number > 0) {
+		remainder = number % 16;
+		switch (remainder) {
+			case 10:
+				remainder = 'a';
+				break;
+			case 11:
+				remainder = 'b';
+				break;
+			case 12:
+				remainder = 'c';
+				break;
+			case 13:
+				remainder = 'd';
+				break;
+			case 14:
+				remainder = 'e';
+				break;
+			case 15:
+				remainder = 'f';
+				break;
+			default:
+				// no change
+				break;
+		}
+		hexDigits.push(remainder);
+		quotient = Math.floor(number / 16);
+		number = quotient;
+	}
+	
+	hexDigits.reverse();
+	return hexDigits.join("");
+}
+
+function hexToDec (string) {
+	if (string.charAt(0) == '#') {
+		string = string.substring(1);
+	} else if (string.charAt(1) == 'x') {
+		string = string.substring(2);
+	}
+	var decimal = 0;
+	var value;
+	var translatedValue;
+	var power;
+	var digit;
+	for (var i = string.length - 1; i >= 0; i--) {
+		value = string.charAt(i);
+		translatedValue = parseInt(value, 16);
+		power = string.length - i - 1;
+		digit = translatedValue * Math.pow(16, power);
+		decimal += digit;	
+	}
+	return decimal;
+}
+
 class Vertex {
 
 	constructor (name, radius) {
@@ -564,66 +624,6 @@ class IndependentSetPhysicsSimulation {
 			}
 		}
 	}
-}
-
-function decToHex (number) {
-	var hexDigits = [];
-	var quotient;
-	var remainder;
-	
-	while (number > 0) {
-		remainder = number % 16;
-		switch (remainder) {
-			case 10:
-				remainder = 'a';
-				break;
-			case 11:
-				remainder = 'b';
-				break;
-			case 12:
-				remainder = 'c';
-				break;
-			case 13:
-				remainder = 'd';
-				break;
-			case 14:
-				remainder = 'e';
-				break;
-			case 15:
-				remainder = 'f';
-				break;
-			default:
-				// no change
-				break;
-		}
-		hexDigits.push(remainder);
-		quotient = Math.floor(number / 16);
-		number = quotient;
-	}
-	
-	hexDigits.reverse();
-	return hexDigits.join("");
-}
-
-function hexToDec (string) {
-	if (string.charAt(0) == '#') {
-		string = string.substring(1);
-	} else if (string.charAt(1) == 'x') {
-		string = string.substring(2);
-	}
-	var decimal = 0;
-	var value;
-	var translatedValue;
-	var power;
-	var digit;
-	for (var i = string.length - 1; i >= 0; i--) {
-		value = string.charAt(i);
-		translatedValue = parseInt(value, 16);
-		power = string.length - i - 1;
-		digit = translatedValue * Math.pow(16, power);
-		decimal += digit;	
-	}
-	return decimal;
 }
 
 $(window).on('load', function () {
