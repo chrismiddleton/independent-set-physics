@@ -190,8 +190,7 @@ function init(){
 	drawEdgesCheckbox = document.getElementById('drawEdgesCheckbox');
 	manualOverrideCheckbox = document.getElementById('manualOverrideCheckbox');
 	
-	startSimulationButton.onclick = function(){
-	
+	$(startSimulationButton).on('click', function(){
 		if(!simulating){
 		
 			if(querying){
@@ -408,9 +407,9 @@ function init(){
 			
 		}
 		
-	};
+	});
 	
-	pauseSimulationButton.onclick = function(){
+	$(pauseSimulationButton).on('click', function(){
 	
 		if(simulating){
 	
@@ -438,9 +437,9 @@ function init(){
 			
 		}
 		
-	}
+	});
 	
-	queryRegionButton.onclick = function(){
+	$(queryRegionButton).on('click', function () {
 	
 		if(!querying){
 	
@@ -529,9 +528,9 @@ function init(){
 			
 		}
 		
-	}
+	});
 	
-	drawEdgesCheckbox.onchange = function(){
+	$(drawEdgesCheckbox).on('change', function () {
 	
 		if(simulating){
 	
@@ -560,7 +559,7 @@ function init(){
 			
 		}
 		
-	};
+	});
 
 }
 
@@ -864,3 +863,7 @@ function hexToDec(string){
 	return decimal;
 	
 }
+
+$(window).on('load', function () {
+	init();
+});
