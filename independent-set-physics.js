@@ -383,23 +383,18 @@ class IndependentSetPhysicsSimulation {
 	}
 	
 	onPauseButtonClick () {
-		if (this.simulating) {
-			if (!this.paused) { // pause
-				this.paused = true;
-				clearTimeout(this.animationID);
-				this.pauseSimulationButton.value = "Unpause simulation";
-			} else { // unpause
-				if (this.querying) {
-					this.querying = false;
-					this.queryDiv.style.display = 'none';
-					this.context.putImageData(this.imageData, 0, 0);
-				}
-		
-				this.animationID = window.setTimeout(this.animate.bind(this), 40);
-				this.paused = false;
-				this.pauseSimulationButton.value = "Pause simulation";
-			}
+		if (!this.simulating) return;
+		if (!this.paused) {
+			this.pause();
+		} else {
+			this.resume();
 		}
+	}
+	
+	pause () {
+		this.paused = true;
+		clearTimeout(this.animationID);
+		this.pauseSimulationButton.value = "Unpause simulation";
 	}
 	
 	queryRegion () {
@@ -465,6 +460,18 @@ class IndependentSetPhysicsSimulation {
 						
 			this.resultsDiv.innerHTML = resultString;
 		}
+	}
+	
+	resume () {
+		if (this.querying) {
+			this.querying = false;
+			this.queryDiv.style.display = 'none';
+			this.context.putImageData(this.imageData, 0, 0);
+		}
+
+		this.animationID = window.setTimeout(this.animate.bind(this), 40);
+		this.paused = false;
+		this.pauseSimulationButton.value = "Pause simulation";
 	}
 	
 	startSimulation () {
