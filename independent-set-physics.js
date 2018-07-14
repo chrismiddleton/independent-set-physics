@@ -20,8 +20,8 @@ class Vertex {
 		this.velocity = {x: 0, y: 0};
 		this.color = '#ffffff';
 		this.textCenter = {x: 0, y: 0};
-		this.adjacentVertices = new Array();
-		this.nonAdjacentVertices = new Array();
+		this.adjacentVertices = [];
+		this.nonAdjacentVertices = [];
 		this.mobile = true;
 		this.mass = 1;
 		this.radius = radius;
@@ -427,7 +427,7 @@ class IndependentSetPhysicsSimulation {
 		
 			this.queryDiv.style.display = 'block';
 		
-			var queryRegionVertices = new Array();
+			var queryRegionVertices = [];
 		
 			var setSize = 0;
 		
@@ -507,10 +507,10 @@ class IndependentSetPhysicsSimulation {
 		this.numEdges = this.numEdgesTextbox.value;
 		var numEdges = this.numEdges;
 
-		this.vertices = new Array();
+		this.vertices = [];
 		var vertices = this.vertices;
 		var vertexRadius = this.vertexRadius;
-		this.anchors = new Array();
+		this.anchors = [];
 		var anchors = this.anchors;
 		for(var i = 0; i < numVertices; i++){
 
@@ -567,7 +567,7 @@ class IndependentSetPhysicsSimulation {
 		
 		}
 
-		this.edges = new Array();
+		this.edges = [];
 		var edges = this.edges;
 
 		var fromVertex, toVertex;
@@ -600,13 +600,13 @@ class IndependentSetPhysicsSimulation {
 
 		// calculate nonEdges
 
-		var allEdges = new Array();
+		var allEdges = [];
 
-		var nonEdges = new Array();
+		var nonEdges = [];
 
 		for(var i = 0; i < vertices.length; i++){
 
-			var row = new Array();
+			var row = [];
 
 			for(var j = 0; j < vertices.length; j++){
 
@@ -716,7 +716,7 @@ class IndependentSetPhysicsSimulation {
 
 function decToHex(number){
 
-	var hexDigits = new Array();
+	var hexDigits = [];
 	var quotient;
 	var remainder;
 	
