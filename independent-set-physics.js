@@ -31,7 +31,7 @@ class Vertex {
 		context.save();
 		
 		context.beginPath();
-		context.arc(this.center.x, this.center.y, this.radius, 0, 2*Math.PI, true);
+		context.arc(this.center.x, this.center.y, this.radius, 0, 2 * Math.PI, true);
 		context.closePath();
 		context.lineWidth = 1;
 		context.strokeStyle = 'black';
@@ -41,12 +41,12 @@ class Vertex {
 		
 		context.fillStyle = 'black';
 		context.font = "8pt Helvetica";
-		if(this.name.length == 3){ // one digit number
-			context.fillText(this.name.substring(2), this.center.x - (this.radius/4), this.center.y + (this.radius/4));
-		} else if(this.name.length == 4){ // two digit number
-			context.fillText(this.name.substring(2), this.center.x - (this.radius/1.75), this.center.y + (this.radius/4));
-		} else{ // three digit number
-			context.fillText(this.name.substring(2), this.center.x - (this.radius/1.15), this.center.y + (this.radius/3.5));
+		if (this.name.length == 3) { // one digit number
+			context.fillText(this.name.substring(2), this.center.x - (this.radius / 4), this.center.y + (this.radius / 4));
+		} else if (this.name.length == 4) { // two digit number
+			context.fillText(this.name.substring(2), this.center.x - (this.radius / 1.75), this.center.y + (this.radius / 4));
+		} else { // three digit number
+			context.fillText(this.name.substring(2), this.center.x - (this.radius / 1.15), this.center.y + (this.radius / 3.5));
 		}
 		
 		context.restore();
@@ -134,37 +134,35 @@ class IndependentSetPhysicsSimulation {
 		var canvas = this.canvas;
 		var timeStep = 1; // 1 seems good
 	
-		var force = {x: 0, y: 0}, forceComponent = {x: 0, y: 0};
+		var force = {x: 0, y: 0};
+		var forceComponent = {x: 0, y: 0};
 		var anchors = this.anchors;
 		var numVertices = this.numVertices;
 		var numEdges = this.numEdges;
 	
-		if(numVertices < 20 && numEdges/numVertices > 0.5){
-			for(var a = 0; a < anchors.length; a++){
+		if (numVertices < 20 && numEdges / numVertices > 0.5){
+			for (var a = 0; a < anchors.length; a++){
 				a.mass = this.anchorMass;
 			}
 		}
 	
-		var unitVector = {x: 0, y: 0}, distanceSquared;
-		var vertex, opposingVertices, opposingVertex;
+		var unitVector = {x: 0, y: 0};
+		var distanceSquared;
+		var vertex;
+		var opposingVertices;
+		var opposingVertex;
 		var vertices = this.vertices;
 		var vertexRadius = this.vertexRadius;
 	
-		for(var i = 0; i < vertices.length; i++){
+		for (var i = 0; i < vertices.length; i++) {
 			force.x = force.y = 0;
 			vertex = vertices[i];
-			if(vertex.mobile){
-				// if(numVertices > 20 && this.iteration % 4 == 0){
-	// 				// calculate new position
-	// 				vertex.center.x += vertex.velocity.x*timeStep + 0.5*vertex.acceleration.x * Math.pow(timeStep, 2);
-	// 				vertex.center.y += vertex.velocity.y*timeStep + 0.5*vertex.acceleration.y * Math.pow(timeStep, 2);
-	// 				return;
-	// 			}
+			if (vertex.mobile) {
 		
-			// first calculate force with adjacent vertices (repulsion)
+				// first calculate force with adjacent vertices (repulsion)
 		
 				opposingVertices = vertex.adjacentVertices;
-				for(var j = 0; j < opposingVertices.length; j++){
+				for (var j = 0; j < opposingVertices.length; j++) {
 					opposingVertex = opposingVertices[j];
 			
 					// vector away from opposingVertex towards vertex
@@ -173,11 +171,11 @@ class IndependentSetPhysicsSimulation {
 			
 					distanceSquared = Math.pow((vertex.center.x - opposingVertex.center.x), 2) + 
 						Math.pow((vertex.center.y - opposingVertex.center.y), 2);
-					if(distanceSquared == 0){ 
+					if (distanceSquared == 0) { 
 						distanceSquared = Math.pow(10, -3);
 					}
-					forceComponent.x = this.repulsionFactor * vertex.mass * opposingVertex.mass * unitVector.x / distanceSquared;
-					forceComponent.y = this.repulsionFactor * vertex.mass * opposingVertex.mass * unitVector.y / distanceSquared;
+					forceComponent.x = (this.repulsionFactor * vertex.mass * opposingVertex.mass * unitVector.x) / distanceSquared;
+					forceComponent.y = (this.repulsionFactor * vertex.mass * opposingVertex.mass * unitVector.y) / distanceSquared;
 					force.x += forceComponent.x;
 					force.y += forceComponent.y;
 				}
@@ -186,7 +184,7 @@ class IndependentSetPhysicsSimulation {
 		
 				opposingVertices = vertex.nonAdjacentVertices;
 		
-				for(var j = 0; j < opposingVertices.length; j++){
+				for (var j = 0; j < opposingVertices.length; j++) {
 					opposingVertex = opposingVertices[j];
 		
 					// vector away from vertex towards opposingVertex
@@ -195,11 +193,11 @@ class IndependentSetPhysicsSimulation {
 			
 					distanceSquared = Math.pow((vertex.center.x - opposingVertex.center.x), 2) + 
 						Math.pow((vertex.center.y - opposingVertex.center.y), 2);
-					if(distanceSquared <= 0.01){ 
+					if (distanceSquared <= 0.01) { 
 						distanceSquared = 0.01;
 					}
-					forceComponent.x = this.attractionFactor * vertex.mass * opposingVertex.mass * unitVector.x / distanceSquared;
-					forceComponent.y = this.attractionFactor * vertex.mass * opposingVertex.mass * unitVector.y / distanceSquared;
+					forceComponent.x = (this.attractionFactor * vertex.mass * opposingVertex.mass * unitVector.x) / distanceSquared;
+					forceComponent.y = (this.attractionFactor * vertex.mass * opposingVertex.mass * unitVector.y) / distanceSquared;
 					force.x += forceComponent.x;
 					force.y += forceComponent.y;
 				}
@@ -207,31 +205,39 @@ class IndependentSetPhysicsSimulation {
 				vertex.acceleration.x = force.x;
 				vertex.acceleration.y = force.y;
 			
-				if(this.withWalls){
+				if (this.withWalls) {
 					// for collision with wall
 		
-					if(vertex.center.x <= 1.25*vertexRadius || vertex.center.y <= 1.25*vertexRadius || vertex.center.x >= (canvas.width - 1.25*vertexRadius) || vertex.center.y >= (canvas.height - 1.25*vertexRadius)){
+					if (
+						vertex.center.x <= 1.25*vertexRadius ||
+						vertex.center.y <= 1.25*vertexRadius ||
+						vertex.center.x >= (canvas.width - 1.25*vertexRadius) ||
+						vertex.center.y >= (canvas.height - 1.25*vertexRadius)
+					) {
 						vertex.velocity.x *= -1;
 						vertex.velocity.y *= -1;
 					}
 				}
 		
 				// calculate new position
-				vertex.center.x += vertex.velocity.x*timeStep + 0.5*vertex.acceleration.x * Math.pow(timeStep, 2);
-				vertex.center.y += vertex.velocity.y*timeStep + 0.5*vertex.acceleration.y * Math.pow(timeStep, 2);
+				vertex.center.x += (vertex.velocity.x * timeStep) + (0.5 * vertex.acceleration.x * Math.pow(timeStep, 2));
+				vertex.center.y += (vertex.velocity.y * timeStep) + (0.5 * vertex.acceleration.y * Math.pow(timeStep, 2));
 		
 				// calculate new velocity
-				vertex.velocity.x += vertex.acceleration.x*timeStep;
-				vertex.velocity.y += vertex.acceleration.y*timeStep;
+				vertex.velocity.x += vertex.acceleration.x * timeStep;
+				vertex.velocity.y += vertex.acceleration.y * timeStep;
 			
 				// imaginary friction
-				vertex.velocity.x /= Math.max(1, ((3000 + this.iteration)/3000));
-				vertex.velocity.y /= Math.max(1, ((3000 + this.iteration)/3000));
+				vertex.velocity.x /= Math.max(1, ((3000 + this.iteration) / 3000));
+				vertex.velocity.y /= Math.max(1, ((3000 + this.iteration) / 3000));
 			
 				// collisions with other vertices
 				if (this.collideWithVertices) {
-					for(var k = 0; k < vertices.length; k++){
-						if((vertex.center.x - vertices[k].center.x) <= 2.1*vertexRadius && (vertex.center.y - vertices[k].center.y <= 2.1*vertexRadius)){
+					for (var k = 0; k < vertices.length; k++) {
+						if (
+							(vertex.center.x - vertices[k].center.x <= 2.1 * vertexRadius) && 
+							(vertex.center.y - vertices[k].center.y <= 2.1 * vertexRadius)
+						) {
 							vertex.velocity.x *= -1;
 							vertex.velocity.y *= -1;
 						}
@@ -240,16 +246,21 @@ class IndependentSetPhysicsSimulation {
 			
 				// for collision with anchor
 				if (this.collideWithAnchors) {
-					for(var k = 0; k < anchors.length; k++){
-						if(vertex.center.x >= (anchors[k].center.x - 2*vertexRadius) && vertex.center.x < (anchors[k].center.x + 2*vertexRadius) && vertex.center.y >= (anchors[k].center.y - 2*vertexRadius) && vertex.center.y < (anchors[k].center.y + 2*vertexRadius)){
-							if(vertex.center.x < anchors[k].center.x){
-								vertex.center.x = anchors[k].center.x - 2*vertexRadius;
-							} else if(vertex.center.x >= anchors[k].center.x){
-								vertex.center.x = anchors[k].center.x + 2*vertexRadius;
-							} else if(vertex.center.y < anchors[k].center.y){
-								vertex.center.y = anchors[k].center.y - 2*vertexRadius;
-							} else if(vertex.center.y >= anchors[k].center.y){
-								vertex.center.y = anchors[k].center.y + 2*vertexRadius;
+					for (var k = 0; k < anchors.length; k++) {
+						if (
+							vertex.center.x >= (anchors[k].center.x - (2 * vertexRadius)) &&
+							vertex.center.x < (anchors[k].center.x + (2 * vertexRadius)) &&
+							vertex.center.y >= (anchors[k].center.y - (2 * vertexRadius)) &&
+							vertex.center.y < (anchors[k].center.y + (2 * vertexRadius))
+						) {
+							if (vertex.center.x < anchors[k].center.x) {
+								vertex.center.x = anchors[k].center.x - (2 * vertexRadius);
+							} else if (vertex.center.x >= anchors[k].center.x) {
+								vertex.center.x = anchors[k].center.x + (2 * vertexRadius);
+							} else if (vertex.center.y < anchors[k].center.y) {
+								vertex.center.y = anchors[k].center.y - (2 * vertexRadius);
+							} else if (vertex.center.y >= anchors[k].center.y) {
+								vertex.center.y = anchors[k].center.y + (2 * vertexRadius);
 							}
 						}
 					}
@@ -260,7 +271,7 @@ class IndependentSetPhysicsSimulation {
 
 	animate () {
 	
-		// calculate changes	
+		// calculate changes
 	
 		// clear the canvas
 		var canvas = this.canvas;
@@ -269,15 +280,15 @@ class IndependentSetPhysicsSimulation {
 		context.clearRect(0, 0, canvas.width, canvas.height);
 	
 		// draw edges if checked
-		if(this.drawingEdges){
+		if (this.drawingEdges) {
 			var edges = this.edges;
-			for(var i = 0; i < edges.length; i++){
+			for (var i = 0; i < edges.length; i++) {
 				edges[i].render(context);
 			}
 		}
 
 		// draw vertices
-		for(var i = 0; i < vertices.length; i++){
+		for (var i = 0; i < vertices.length; i++) {
 			vertices[i].render(context);
 		}
 	
@@ -292,33 +303,33 @@ class IndependentSetPhysicsSimulation {
 		clearTimeout(this.animationID);
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	
-		if(this.querying){
+		if (this.querying) {
 			this.querying = false;
 			this.queryDiv.style.display = 'none';
 		}
 	
-		if(this.paused){
+		if (this.paused) {
 			this.paused = false;
 			this.pauseSimulationButton.value = "Pause simulation";
 		}
 	}
 	
 	onStartSimulationButtonClick () {
-		if(!this.simulating){
+		if (!this.simulating) {
 			this.startSimulation();
-		} else{
+		} else {
 			this.stopSimulation();
 		}
 	}
 	
 	pauseSimulation () {
-		if(this.simulating){
-			if(!this.paused){ // pause
+		if (this.simulating) {
+			if (!this.paused) { // pause
 				this.paused = true;
 				clearTimeout(this.animationID);
 				this.pauseSimulationButton.value = "Unpause simulation";
-			} else{ // unpause
-				if(this.querying){
+			} else { // unpause
+				if (this.querying) {
 					this.querying = false;
 					this.queryDiv.style.display = 'none';
 					this.context.putImageData(this.imageData, 0, 0);
@@ -332,8 +343,8 @@ class IndependentSetPhysicsSimulation {
 	}
 	
 	queryRegion () {
-		if(!this.querying){
-			if(!this.paused){
+		if (!this.querying) {
+			if (!this.paused) {
 				this.pauseSimulationButton.click();	
 			}
 	
@@ -349,7 +360,7 @@ class IndependentSetPhysicsSimulation {
 			context.strokeStyle = '#000';
 			context.lineWidth = 1;
 			context.beginPath();
-			context.arc(regionX, regionY, regionRadius, 0, 2*Math.PI, true);
+			context.arc(regionX, regionY, regionRadius, 0, (2 * Math.PI), true);
 			context.closePath();
 			context.stroke();
 			context.restore();
@@ -360,9 +371,9 @@ class IndependentSetPhysicsSimulation {
 			var setSize = 0;
 			var resultString = "";
 			var vertices = this.vertices;
-			for(var v = 0; v < vertices.length; v++){
-				if(vertices[v].mobile){ // weeds out anchor vertices
-					if(Math.pow(vertices[v].center.x - regionX, 2) + Math.pow(vertices[v].center.y - regionY, 2) < Math.pow(regionRadius, 2)){
+			for (var v = 0; v < vertices.length; v++) {
+				if (vertices[v].mobile) { // weeds out anchor vertices
+					if (Math.pow(vertices[v].center.x - regionX, 2) + Math.pow(vertices[v].center.y - regionY, 2) < Math.pow(regionRadius, 2)) {
 						queryRegionVertices[v] = vertices[v];
 						setSize++;
 						resultString += (vertices[v].toString() + "<br />");
@@ -371,24 +382,24 @@ class IndependentSetPhysicsSimulation {
 			}
 		
 			var edgeFound = false;
-			for(var w = 0; w < queryRegionVertices.length; w++){
-				if(queryRegionVertices[w] != null){
-					for(var x = 0; x < queryRegionVertices[w].adjacentVertices.length; x++){
-						if(queryRegionVertices[parseInt(queryRegionVertices[w].adjacentVertices[x].name.substring(2), 10)] != null){
+			for (var w = 0; w < queryRegionVertices.length; w++) {
+				if (queryRegionVertices[w] != null) {
+					for (var x = 0; x < queryRegionVertices[w].adjacentVertices.length; x++) {
+						if (queryRegionVertices[parseInt(queryRegionVertices[w].adjacentVertices[x].name.substring(2), 10)] != null) {
 							edgeFound = true;
 							break;
 						}
 					}
 				}
 			
-				if(edgeFound){
+				if (edgeFound) {
 					break;
 				}
 			}
 		
-			if(edgeFound){
+			if (edgeFound) {
 				this.independenceDiv.innerHTML = "Uh, oh! It appears that this set is not independent.";
-			} else{
+			} else {
 				this.independenceDiv.innerHTML = "Success! An independent set of size " + setSize + "! <span style='font-size: 0.6em;'><a href='http://www.thewire.com/entertainment/2012/01/target-kristen-wiigs-target-lady-approved/47866/'>I gotta get me one o' those.</a></span>";
 			}
 						
@@ -397,7 +408,7 @@ class IndependentSetPhysicsSimulation {
 	}
 	
 	startSimulation () {
-		if(this.querying){
+		if (this.querying) {
 			this.queryDiv.style.display = 'none';
 			this.querying = false;
 		}
@@ -414,7 +425,7 @@ class IndependentSetPhysicsSimulation {
 		var vertexRadius = this.vertexRadius;
 		this.anchors = [];
 		var anchors = this.anchors;
-		for(var i = 0; i < numVertices; i++){
+		for (var i = 0; i < numVertices; i++) {
 			vertices.push(new Vertex('V_' + i, vertexRadius));
 		}
 
@@ -426,35 +437,35 @@ class IndependentSetPhysicsSimulation {
 		var vertexSubscript;
 		var maxColor = parseInt('ffffff', 16);
 
-		for(var i = 0; i < numVertices; i++){
-			vertices[i].center = {x: (Math.random()*canvas.width) + 1, y: (Math.random()*canvas.height) + 1};
+		for (var i = 0; i < numVertices; i++) {
+			vertices[i].center = {x: (Math.random() * canvas.width) + 1, y: (Math.random() * canvas.height) + 1};
 			vertices[i].center.x = Math.max(20, Math.min((canvas.width - 20), vertices[i].center.x));
 			vertices[i].center.y = Math.max(20, Math.min((canvas.height - 20), vertices[i].center.y));
 			vertexSubscript = parseInt(vertices[i].name.substring(2), 10);
-			vertices[i].color = 'hsl(' + (vertexSubscript * 360/numVertices) + ', 100%, 75%)';
+			vertices[i].color = 'hsl(' + (vertexSubscript * (360 / numVertices)) + ', 100%, 75%)';
 		}
 	
 		this.withAnchor = this.withAnchorCheckbox.checked;
 		this.withWalls = this.withWallsCheckbox.checked;
 	
-		if(this.manualOverrideCheckbox.checked){
+		if (this.manualOverrideCheckbox.checked) {
 			this.attractionFactor = this.attractionFactorTextbox.value;
 			this.repulsionFactor = this.repulsionFactorTextbox.value;
 			this.anchorMass = this.anchorMassTextbox.value;
-		} else{
+		} else {
 			this.anchorMass = 4;
 			this.attractionFactor = 1;
-			this.repulsionFactor = 1.5*numVertices*Math.max(1.5, Math.min(1.5, numVertices/numEdges));
+			this.repulsionFactor = 1.5 * numVertices * Math.max(1.5, Math.min(1.5, numVertices / numEdges));
 			this.repulsionFactorTextbox.value = this.repulsionFactor;
 			this.attractionFactorTextbox.value = this.attractionFactor;
 			this.anchorMassTextbox.value = this.anchorMass;
 		}
 	
-		if(this.withAnchor){
+		if (this.withAnchor) {
 			// create anchors
 
 			vertices.push(new Vertex('x'));
-			vertices[vertices.length - 1].center = {x: canvas.width/2, y: canvas.height/2};
+			vertices[vertices.length - 1].center = {x: canvas.width / 2, y: canvas.height / 2};
 			vertices[vertices.length - 1].mass = this.anchorMass;
 			vertices[vertices.length - 1].mobile = false;
 			vertices[vertices.length - 1].color = '#000';
@@ -465,19 +476,19 @@ class IndependentSetPhysicsSimulation {
 		var edges = this.edges;
 		var fromVertex, toVertex;
 
-		for(var i = 0; i < numEdges; i++){
+		for (var i = 0; i < numEdges; i++) {
 			fromVertex = Math.floor(numVertices * Math.random());
 			toVertex = Math.floor(numVertices * Math.random());
 
-			if(fromVertex < toVertex){
+			if (fromVertex < toVertex) {
 				edges.push(new Edge(vertices[fromVertex], vertices[toVertex]));
-			} else{
+			} else {
 				i--;
 			}
 		}
 
 		// add edges to the vertices
-		for(var i = 0; i < edges.length; i++){
+		for (var i = 0; i < edges.length; i++) {
 			edges[i].to.adjacentVertices.push(edges[i].from);
 			edges[i].from.adjacentVertices.push(edges[i].to);
 		}
@@ -485,9 +496,9 @@ class IndependentSetPhysicsSimulation {
 		// calculate nonEdges
 		var allEdges = [];
 		var nonEdges = [];
-		for(var i = 0; i < vertices.length; i++){
+		for (var i = 0; i < vertices.length; i++) {
 			var row = [];
-			for(var j = 0; j < vertices.length; j++){
+			for (var j = 0; j < vertices.length; j++) {
 				row.push(new Edge(vertices[i], vertices[j]));
 			}
 			allEdges.push(row);
@@ -495,35 +506,35 @@ class IndependentSetPhysicsSimulation {
 
 		var fromVertex;
 		var toVertex;
-		for(var i = 0; i < edges.length; i++){
+		for (var i = 0; i < edges.length; i++) {
 			fromVertex = parseInt(edges[i].from.name.substring(2));
 			toVertex = parseInt(edges[i].to.name.substring(2));
 			allEdges[fromVertex][toVertex] = null;
 		}
 
-		for(var i = 0; i < allEdges.length; i++){
-			for(var j = 0; j < allEdges[i].length; j++){
-				if(allEdges[i][j] != null){
+		for (var i = 0; i < allEdges.length; i++) {
+			for (var j = 0; j < allEdges[i].length; j++) {
+				if (allEdges[i][j] != null) {
 					nonEdges.push(new Edge(vertices[i], vertices[j]));
 				}
 			}
 		}
 
 		// add nonAdjacentVertices for each vertex
-		for(var i = 0; i < nonEdges.length; i++){
+		for (var i = 0; i < nonEdges.length; i++) {
 			nonEdges[i].to.nonAdjacentVertices.push(nonEdges[i].from);
 			nonEdges[i].from.nonAdjacentVertices.push(nonEdges[i].to);
 		}
 
 		this.iteration = 0;
 	
-		if(numEdges < 1000){
+		if (numEdges < 1000) {
 			this.drawingEdges = this.drawEdgesCheckbox.checked;
-		} else if(this.drawEdgesCheckbox.checked){
+		} else if (this.drawEdgesCheckbox.checked) {
 			var message = "Drawing more than 1000 edges is a bad idea unless you have a very fast computer.";
 			message += "\nIf you choose not to draw the edges, they will still be factored into the computation.";
 			message += "\nTo disable edge drawing, click cancel. To draw edges anyway, click OK.";
-			if(confirm(message)){
+			if (confirm(message)) {
 				this.drawingEdges = true;
 			} else {
 				this.drawingEdges = false;
@@ -537,14 +548,14 @@ class IndependentSetPhysicsSimulation {
 	
 	toggleEdges () {
 		var numEdges = this.numEdges;
-		if(this.simulating){
-			if(numEdges < 1000){
+		if (this.simulating) {
+			if (numEdges < 1000) {
 				this.drawingEdges = this.drawEdgesCheckbox.checked;
-			} else if(this.drawEdgesCheckbox.checked){
+			} else if (this.drawEdgesCheckbox.checked) {
 				var message = "Drawing more than 1000 edges is a bad idea unless you have a very fast computer.";
 				message += "\nIf you choose not to draw the edges, they will still be factored into the computation.";
 				message += "\nTo disable edge drawing, click cancel. To draw edges anyway, click OK.";
-				if(confirm(message)){
+				if (confirm(message)) {
 					this.drawingEdges = true;
 				} else {
 					this.drawingEdges = false;
@@ -555,14 +566,14 @@ class IndependentSetPhysicsSimulation {
 	}
 }
 
-function decToHex(number){
+function decToHex (number) {
 	var hexDigits = [];
 	var quotient;
 	var remainder;
 	
-	while(number > 0){
+	while (number > 0) {
 		remainder = number % 16;
-		switch(remainder){
+		switch (remainder) {
 			case 10:
 				remainder = 'a';
 				break;
@@ -594,10 +605,10 @@ function decToHex(number){
 	return hexDigits.join("");
 }
 
-function hexToDec(string){
-	if(string.charAt(0) == '#'){
+function hexToDec (string) {
+	if (string.charAt(0) == '#') {
 		string = string.substring(1);
-	} else if(string.charAt(1) == 'x'){
+	} else if (string.charAt(1) == 'x') {
 		string = string.substring(2);
 	}
 	var decimal = 0;
@@ -605,7 +616,7 @@ function hexToDec(string){
 	var translatedValue;
 	var power;
 	var digit;
-	for(var i = string.length - 1; i >=0; i--){
+	for (var i = string.length - 1; i >= 0; i--) {
 		value = string.charAt(i);
 		translatedValue = parseInt(value, 16);
 		power = string.length - i - 1;
