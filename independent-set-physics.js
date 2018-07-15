@@ -217,17 +217,7 @@ class IndependentSetPhysicsSimulation {
 				vertex.acceleration.y = force.y;
 			
 				if (this.withWalls) {
-					// for collision with wall
-		
-					if (
-						vertex.center.x <= 1.25*vertexRadius ||
-						vertex.center.y <= 1.25*vertexRadius ||
-						vertex.center.x >= (canvas.width - 1.25*vertexRadius) ||
-						vertex.center.y >= (canvas.height - 1.25*vertexRadius)
-					) {
-						vertex.velocity.x *= -1;
-						vertex.velocity.y *= -1;
-					}
+					this.handleCollisionsWithWalls(vertex, canvas, vertexRadius);
 				}
 		
 				// calculate new position
@@ -365,13 +355,18 @@ class IndependentSetPhysicsSimulation {
 	
 	handleCollisionsWithVertices (vertex, vertices, vertexRadius) {
 		for (var otherVertex of vertices) {
-			if (
-				(vertex.center.x - otherVertex.center.x <= 2.1 * vertexRadius) && 
-				(vertex.center.y - otherVertex.center.y <= 2.1 * vertexRadius)
-			) {
+			if (this.isCollidingWithVertex(vertex, otherVertex, vertexRadius)) {
 				vertex.velocity.x *= -1;
 				vertex.velocity.y *= -1;
 			}
+		}
+	}
+	
+	handleCollisionsWithWalls (vertex, canvas, vertexRadius) {
+		// for collision with wall
+		if (this.isCollidingWithWall(vertex, canvas, vertexRadius)) {
+			vertex.velocity.x *= -1;
+			vertex.velocity.y *= -1;
 		}
 	}
 	
@@ -384,6 +379,22 @@ class IndependentSetPhysicsSimulation {
 		);
 	}
 	
+	isCollidingWithWall (vertex, canvas, vertexRadius) {
+		return (
+			vertex.center.x <= 1.25*vertexRadius ||
+			vertex.center.y <= 1.25*vertexRadius ||
+			vertex.center.x >= (canvas.width - 1.25*vertexRadius) ||
+			vertex.center.y >= (canvas.height - 1.25*vertexRadius)
+		);
+	}
+	
+	isCollidingWithVertex (vertex, otherVertex, vertexRadius) {
+		return (
+			(vertex.center.x - otherVertex.center.x <= 2.1 * vertexRadius) && 
+			(vertex.center.y - otherVertex.center.y <= 2.1 * vertexRadius)
+		);
+	}
+
 	isIndependentSet (vertices) {
 		var edgeFound = false;
 		for (var w in vertices) {
