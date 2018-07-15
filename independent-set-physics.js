@@ -138,6 +138,7 @@ class IndependentSetPhysicsSimulation {
 	}
 	
 	applyFriction (vertex, iteration) {
+		// imaginary friction
 		vertex.velocity.x /= Math.max(1, ((3000 + iteration) / 3000));
 		vertex.velocity.y /= Math.max(1, ((3000 + iteration) / 3000));
 	}
@@ -168,15 +169,9 @@ class IndependentSetPhysicsSimulation {
 					this.handleCollisionsWithWalls(vertex, canvas, vertexRadius);
 				}
 		
-				// calculate new position
-				vertex.center.x += (vertex.velocity.x * timeStep) + (0.5 * vertex.acceleration.x * Math.pow(timeStep, 2));
-				vertex.center.y += (vertex.velocity.y * timeStep) + (0.5 * vertex.acceleration.y * Math.pow(timeStep, 2));
-		
-				// calculate new velocity
-				vertex.velocity.x += vertex.acceleration.x * timeStep;
-				vertex.velocity.y += vertex.acceleration.y * timeStep;
+				this.updatePosition(vertex, timeStep);
+				this.updateVelocity(vertex, timeStep);
 			
-				// imaginary friction
 				this.applyFriction(vertex, this.iteration);
 			
 				if (this.collideWithVertices) {
@@ -624,6 +619,17 @@ class IndependentSetPhysicsSimulation {
 		vertex.acceleration.x = force.x;
 		vertex.acceleration.y = force.y;
 	}
+	
+	updatePosition (vertex, timeStep) {
+		vertex.center.x += (vertex.velocity.x * timeStep) + (0.5 * vertex.acceleration.x * Math.pow(timeStep, 2));
+		vertex.center.y += (vertex.velocity.y * timeStep) + (0.5 * vertex.acceleration.y * Math.pow(timeStep, 2));
+	}
+	
+	updateVelocity (vertex, timeStep) {
+		vertex.velocity.x += vertex.acceleration.x * timeStep;
+		vertex.velocity.y += vertex.acceleration.y * timeStep;
+	}
+	
 }
 
 $(window).on('load', function () {
