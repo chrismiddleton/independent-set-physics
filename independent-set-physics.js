@@ -188,34 +188,11 @@ class IndependentSetPhysicsSimulation {
 			for (var a = 0; a < anchors.length; a++){
 				a.mass = this.anchorMass;
 			}
+		 // 1 seems good
+		var timeStep = 1;
+		for (var vertex of this.vertices) {
+			this.updateVertex(vertex, timeStep);
 		}
-	
-		var vertices = this.vertices;
-		var vertexRadius = this.vertexRadius;
-	
-		for (var vertex of vertices) {
-			if (vertex.mobile) {
-		
-				this.updateAcceleration(vertex, this.attractionFactor, this.repulsionFactor);
-			
-				if (this.withWalls) {
-					this.handleCollisionsWithWalls(vertex, canvas, vertexRadius);
-				}
-		
-				this.updatePosition(vertex, timeStep);
-				this.updateVelocity(vertex, timeStep);
-			
-				this.applyFriction(vertex, this.iteration);
-			
-				if (this.collideWithVertices) {
-					this.handleCollisionsWithVertices(vertex, vertices, vertexRadius);
-				}
-			
-				if (this.collideWithAnchors) {
-					this.handleCollisionsWithAnchor(vertex, anchors, vertexRadius);
-				}
-			} // end if(vertex.mobile)
-		} // end for loop
 	}
 	
 	computeAllEdges (vertices, edges) {
@@ -646,6 +623,29 @@ class IndependentSetPhysicsSimulation {
 	updateVelocity (vertex, timeStep) {
 		vertex.velocity.x += vertex.acceleration.x * timeStep;
 		vertex.velocity.y += vertex.acceleration.y * timeStep;
+	}
+	
+	updateVertex (vertex, timeStep) {
+		if (!vertex.mobile) return;
+		
+		this.updateAcceleration(vertex, this.attractionFactor, this.repulsionFactor);
+	
+		if (this.withWalls) {
+			this.handleCollisionsWithWalls(vertex, this.canvas, this.vertexRadius);
+		}
+
+		this.updatePosition(vertex, timeStep);
+		this.updateVelocity(vertex, timeStep);
+	
+		this.applyFriction(vertex, this.iteration);
+	
+		if (this.collideWithVertices) {
+			this.handleCollisionsWithVertices(vertex, vertices, this.vertexRadius);
+		}
+	
+		if (this.collideWithAnchors) {
+			this.handleCollisionsWithAnchor(vertex, anchors, this.vertexRadius);
+		}
 	}
 	
 }
