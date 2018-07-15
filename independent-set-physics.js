@@ -163,7 +163,7 @@ class IndependentSetPhysicsSimulation {
 		for (var vertex of vertices) {
 			if (vertex.mobile) {
 		
-				this.updateAcceleration(vertex, timeStep, this.attractionFactor, this.repulsionFactor);
+				this.updateAcceleration(vertex, this.attractionFactor, this.repulsionFactor);
 			
 				if (this.withWalls) {
 					this.handleCollisionsWithWalls(vertex, canvas, vertexRadius);
@@ -205,6 +205,26 @@ class IndependentSetPhysicsSimulation {
 		return allEdges;
 	}
 	
+	computeAttraction (vertex) {
+		var attraction = {x: 0, y: 0};
+		var unitVector = {x: 0, y: 0};
+		var distanceSquared;
+		for (var opposingVertex of vertex.nonAdjacentVertices) {
+			// vector away from vertex towards opposingVertex
+			unitVector.x = opposingVertex.center.x - vertex.center.x;
+			unitVector.y = opposingVertex.center.y - vertex.center.y;
+	
+			distanceSquared = Math.pow((vertex.center.x - opposingVertex.center.x), 2) + 
+				Math.pow((vertex.center.y - opposingVertex.center.y), 2);
+			if (distanceSquared <= 0.01) { 
+				distanceSquared = 0.01;
+			}
+			attraction.x += (this.attractionFactor * vertex.mass * opposingVertex.mass * unitVector.x) / distanceSquared;
+			attraction.y += (this.attractionFactor * vertex.mass * opposingVertex.mass * unitVector.y) / distanceSquared;
+		}
+		return attraction;
+	}
+	
 	computeNonAdjacentVertices (vertices, edges) {
 		var nonEdges = this.computeNonEdges(vertices, edges);
 		// add nonAdjacentVertices for each vertex
@@ -238,6 +258,26 @@ class IndependentSetPhysicsSimulation {
 			}
 		}
 		return queryRegionVertices;
+	}
+	
+	computeRepulsion (vertex) {
+		var repulsion = {x: 0, y: 0};
+		var unitVector = {x: 0, y: 0};
+		var distanceSquared;
+		for (var opposingVertex of vertex.adjacentVertices) {
+			// vector away from opposingVertex towards vertex
+			unitVector.x = vertex.center.x - opposingVertex.center.x;
+			unitVector.y = vertex.center.y - opposingVertex.center.y;
+	
+			distanceSquared = Math.pow((vertex.center.x - opposingVertex.center.x), 2) + 
+				Math.pow((vertex.center.y - opposingVertex.center.y), 2);
+			if (distanceSquared == 0) { 
+				distanceSquared = Math.pow(10, -3);
+			}
+			repulsion.x += (this.repulsionFactor * vertex.mass * opposingVertex.mass * unitVector.x) / distanceSquared;
+			repulsion.y += (this.repulsionFactor * vertex.mass * opposingVertex.mass * unitVector.y) / distanceSquared;
+		}
+		return forceComponent;
 	}
 	
 	generateAnchors (canvas, anchorMass) {
@@ -569,44 +609,16 @@ class IndependentSetPhysicsSimulation {
 		}
 	}
 	
-	updateAcceleration (vertex, timeStep, attractionFactor, repulsionFactor) {
+	updateAcceleration (vertex, attractionFactor, repulsionFactor) {
 		var force = {x: 0, y: 0};
-		var unitVector = {x: 0, y: 0};
-		var distanceSquared;
 		
 		// first calculate force with adjacent vertices (repulsion)
-		var forceComponent = {x: 0, y: 0};
-		for (var opposingVertex of vertex.adjacentVertices) {
-			// vector away from opposingVertex towards vertex
-			unitVector.x = vertex.center.x - opposingVertex.center.x;
-			unitVector.y = vertex.center.y - opposingVertex.center.y;
-	
-			distanceSquared = Math.pow((vertex.center.x - opposingVertex.center.x), 2) + 
-				Math.pow((vertex.center.y - opposingVertex.center.y), 2);
-			if (distanceSquared == 0) { 
-				distanceSquared = Math.pow(10, -3);
-			}
-			forceComponent.x += (this.repulsionFactor * vertex.mass * opposingVertex.mass * unitVector.x) / distanceSquared;
-			forceComponent.y += (this.repulsionFactor * vertex.mass * opposingVertex.mass * unitVector.y) / distanceSquared;
-		}
-		force.x += forceComponent.x;
-		force.y += forceComponent.y;
+		var repulsion = this.computeRepulsion(vertex);
+		force.x += repulsion.x;
+		force.y += repulsion.y;
 
 		// then calculate force with nonadjacent vertices
-		var forceComponent = {x: 0, y: 0};
-		for (var opposingVertex of vertex.nonAdjacentVertices) {
-			// vector away from vertex towards opposingVertex
-			unitVector.x = opposingVertex.center.x - vertex.center.x;
-			unitVector.y = opposingVertex.center.y - vertex.center.y;
-	
-			distanceSquared = Math.pow((vertex.center.x - opposingVertex.center.x), 2) + 
-				Math.pow((vertex.center.y - opposingVertex.center.y), 2);
-			if (distanceSquared <= 0.01) { 
-				distanceSquared = 0.01;
-			}
-			forceComponent.x += (this.attractionFactor * vertex.mass * opposingVertex.mass * unitVector.x) / distanceSquared;
-			forceComponent.y += (this.attractionFactor * vertex.mass * opposingVertex.mass * unitVector.y) / distanceSquared;
-		}
+		var attraction = this.computeAttraction(vertex)
 		force.x += forceComponent.x;
 		force.y += forceComponent.y;
 
