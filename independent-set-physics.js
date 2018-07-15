@@ -411,34 +411,33 @@ class IndependentSetPhysicsSimulation {
 	}
 	
 	queryRegion () {
-		if (!this.querying) {
-			this.pause();
+		if (this.querying) return;
+		this.pause();
+
+		var regionX = this.regionXTextbox.value;
+		var regionY = this.regionYTextbox.value;
+		var regionRadius = this.regionRadiusTextbox.value;
+		var canvas = this.canvas;
+		var context = this.context;
+
+		this.imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+		this.renderQueryRegionBoundary(context, regionX, regionY, regionRadius);
+
+		this.querying = true;
+		this.queryDiv.style.display = 'block';
+		var vertices = this.vertices;
+		var queryRegionVertices = this.computeQueryRegionVertices(vertices, regionX, regionY, regionRadius);
+		var queryRegionVerticesValues = Object.values(queryRegionVertices);
+		var resultString = queryRegionVerticesValues.join("<br>");
+		var setSize = queryRegionVerticesValues.length;
 	
-			var regionX = this.regionXTextbox.value;
-			var regionY = this.regionYTextbox.value;
-			var regionRadius = this.regionRadiusTextbox.value;
-			var canvas = this.canvas;
-			var context = this.context;
-	
-			this.imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-			this.renderQueryRegionBoundary(context, regionX, regionY, regionRadius);
-	
-			this.querying = true;
-			this.queryDiv.style.display = 'block';
-			var vertices = this.vertices;
-			var queryRegionVertices = this.computeQueryRegionVertices(vertices, regionX, regionY, regionRadius);
-			var queryRegionVerticesValues = Object.values(queryRegionVertices);
-			var resultString = queryRegionVerticesValues.join("<br>");
-			var setSize = queryRegionVerticesValues.length;
-		
-			if (this.isIndependentSet(queryRegionVertices)) {
-				this.independenceDiv.innerHTML = "Success! An independent set of size " + setSize + "! <span style='font-size: 0.6em;'><a href='http://www.thewire.com/entertainment/2012/01/target-kristen-wiigs-target-lady-approved/47866/'>I gotta get me one o' those.</a></span>";
-			} else {
-				this.independenceDiv.innerHTML = "Uh, oh! It appears that this set is not independent.";
-			}
-						
-			this.resultsDiv.innerHTML = resultString;
+		if (this.isIndependentSet(queryRegionVertices)) {
+			this.independenceDiv.innerHTML = "Success! An independent set of size " + setSize + "! <span style='font-size: 0.6em;'><a href='http://www.thewire.com/entertainment/2012/01/target-kristen-wiigs-target-lady-approved/47866/'>I gotta get me one o' those.</a></span>";
+		} else {
+			this.independenceDiv.innerHTML = "Uh, oh! It appears that this set is not independent.";
 		}
+					
+		this.resultsDiv.innerHTML = resultString;
 	}
 	
 	render () {
