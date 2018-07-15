@@ -346,6 +346,53 @@ class IndependentSetPhysicsSimulation {
 		}
 	}
 	
+	initGraph () {
+		this.vertices = this.generateVertices(this.numVertices, this.vertexRadius, this.canvas);
+		if (this.withAnchor) {
+			this.anchors = this.generateAnchors(this.canvas, this.anchorMass);
+		} else {
+			this.anchors = [];
+		}
+		for (var anchor of this.anchors) {
+			this.vertices.push(anchor);
+		}
+		this.edges = this.generateEdges(this.vertices, this.numEdges);
+		this.computeNonAdjacentVertices(this.vertices, this.edges);
+	}
+	
+	initParameters () {
+		this.numVertices = this.numVerticesTextbox.value;
+		this.numEdges = this.numEdgesTextbox.value;		
+		this.withAnchor = this.withAnchorCheckbox.checked;
+		this.withWalls = this.withWallsCheckbox.checked;
+	
+		if (this.manualOverrideCheckbox.checked) {
+			this.attractionFactor = this.attractionFactorTextbox.value;
+			this.repulsionFactor = this.repulsionFactorTextbox.value;
+			this.anchorMass = this.anchorMassTextbox.value;
+		} else {
+			this.anchorMass = 4;
+			this.attractionFactor = 1;
+			this.repulsionFactor = 1.5 * this.numVertices * Math.max(1.5, Math.min(1.5, this.numVertices / this.numEdges));
+			this.repulsionFactorTextbox.value = this.repulsionFactor;
+			this.attractionFactorTextbox.value = this.attractionFactor;
+			this.anchorMassTextbox.value = this.anchorMass;
+		}
+		if (this.numEdges < 1000) {
+			this.drawingEdges = this.drawEdgesCheckbox.checked;
+		} else if (this.drawEdgesCheckbox.checked) {
+			var message = "Drawing more than 1000 edges is a bad idea unless you have a very fast computer.";
+			message += "\nIf you choose not to draw the edges, they will still be factored into the computation.";
+			message += "\nTo disable edge drawing, click cancel. To draw edges anyway, click OK.";
+			if (confirm(message)) {
+				this.drawingEdges = true;
+			} else {
+				this.drawingEdges = false;
+				this.drawEdgesCheckbox.checked = false;
+			}
+		}
+	}
+	
 	isCollidingWithAnchor (vertex, anchor, vertexRadius) {
 		return (
 			vertex.center.x >= (anchor.center.x - (2 * vertexRadius)) &&
@@ -487,70 +534,12 @@ class IndependentSetPhysicsSimulation {
 	}
 	
 	start () {
-		if (this.querying) {
-			this.queryDiv.style.display = 'none';
-			this.querying = false;
-		}
-
+		this.initParameters();
 		this.simulating = true;
-
-		this.numVertices = this.numVerticesTextbox.value;
-		var numVertices = this.numVertices;
-		this.numEdges = this.numEdgesTextbox.value;
-		var numEdges = this.numEdges;
-
-		var vertexRadius = this.vertexRadius;
-		var canvas = this.canvas;
-		var vertices = this.vertices = this.generateVertices(this.numVertices, this.vertexRadius, canvas);
-	
-		this.withAnchor = this.withAnchorCheckbox.checked;
-		this.withWalls = this.withWallsCheckbox.checked;
-	
-		if (this.manualOverrideCheckbox.checked) {
-			this.attractionFactor = this.attractionFactorTextbox.value;
-			this.repulsionFactor = this.repulsionFactorTextbox.value;
-			this.anchorMass = this.anchorMassTextbox.value;
-		} else {
-			this.anchorMass = 4;
-			this.attractionFactor = 1;
-			this.repulsionFactor = 1.5 * numVertices * Math.max(1.5, Math.min(1.5, numVertices / numEdges));
-			this.repulsionFactorTextbox.value = this.repulsionFactor;
-			this.attractionFactorTextbox.value = this.attractionFactor;
-			this.anchorMassTextbox.value = this.anchorMass;
-		}
-	
-		if (this.withAnchor) {
-			this.anchors = this.generateAnchors(canvas, this.anchorMass);
-		} else {
-			this.anchors = [];
-		}
-		
-		for (var anchor of this.anchors) {
-			vertices.push(anchor);
-		}
-
-		var edges = this.edges = this.generateEdges(vertices, numEdges);
-
-		this.computeNonAdjacentVertices(vertices, edges);
-
 		this.iteration = 0;
-	
-		if (numEdges < 1000) {
-			this.drawingEdges = this.drawEdgesCheckbox.checked;
-		} else if (this.drawEdgesCheckbox.checked) {
-			var message = "Drawing more than 1000 edges is a bad idea unless you have a very fast computer.";
-			message += "\nIf you choose not to draw the edges, they will still be factored into the computation.";
-			message += "\nTo disable edge drawing, click cancel. To draw edges anyway, click OK.";
-			if (confirm(message)) {
-				this.drawingEdges = true;
-			} else {
-				this.drawingEdges = false;
-				this.drawEdgesCheckbox.checked = false;
-			}
-		}
-
+		this.initGraph();
 		this.animate();
-		this.startButton.value = "End simulation";
+		this.updateUI();
 	}
 	
 	stop () {
@@ -600,6 +589,16 @@ class IndependentSetPhysicsSimulation {
 	updatePosition (vertex, timeStep) {
 		vertex.center.x += (vertex.velocity.x * timeStep) + (0.5 * vertex.acceleration.x * Math.pow(timeStep, 2));
 		vertex.center.y += (vertex.velocity.y * timeStep) + (0.5 * vertex.acceleration.y * Math.pow(timeStep, 2));
+	}
+	
+	updateUI () {
+		if (this.simulating) {
+			if (this.querying) {
+				this.queryDiv.style.display = 'none';
+				this.querying = false;
+			}
+			this.startButton.value = "End simulation";
+		}
 	}
 	
 	updateVelocity (vertex, timeStep) {
