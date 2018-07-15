@@ -362,10 +362,10 @@ class IndependentSetPhysicsSimulation {
 	
 	isCollidingWithWall (vertex, canvas, vertexRadius) {
 		return (
-			vertex.center.x <= 1.25*vertexRadius ||
-			vertex.center.y <= 1.25*vertexRadius ||
-			vertex.center.x >= (canvas.width - 1.25*vertexRadius) ||
-			vertex.center.y >= (canvas.height - 1.25*vertexRadius)
+			vertex.center.x <= 1.25 * vertexRadius ||
+			vertex.center.y <= 1.25 * vertexRadius ||
+			vertex.center.x >= (canvas.width - 1.25 * vertexRadius) ||
+			vertex.center.y >= (canvas.height - 1.25 * vertexRadius)
 		);
 	}
 	
