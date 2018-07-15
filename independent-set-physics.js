@@ -137,6 +137,11 @@ class IndependentSetPhysicsSimulation {
 		this.iteration++;
 	}
 	
+	applyFriction (vertex, iteration) {
+		vertex.velocity.x /= Math.max(1, ((3000 + iteration) / 3000));
+		vertex.velocity.y /= Math.max(1, ((3000 + iteration) / 3000));
+	}
+	
 	calculate () {
 		var canvas = this.canvas;
 		var timeStep = 1; // 1 seems good
@@ -234,42 +239,14 @@ class IndependentSetPhysicsSimulation {
 				vertex.velocity.y += vertex.acceleration.y * timeStep;
 			
 				// imaginary friction
-				vertex.velocity.x /= Math.max(1, ((3000 + this.iteration) / 3000));
-				vertex.velocity.y /= Math.max(1, ((3000 + this.iteration) / 3000));
+				this.applyFriction(vertex, this.iteration);
 			
-				// collisions with other vertices
 				if (this.collideWithVertices) {
-					for (var k = 0; k < vertices.length; k++) {
-						if (
-							(vertex.center.x - vertices[k].center.x <= 2.1 * vertexRadius) && 
-							(vertex.center.y - vertices[k].center.y <= 2.1 * vertexRadius)
-						) {
-							vertex.velocity.x *= -1;
-							vertex.velocity.y *= -1;
-						}
-					}
+					this.handleCollisionsWithVertices(vertex, vertices, vertexRadius);
 				}
 			
-				// for collision with anchor
 				if (this.collideWithAnchors) {
-					for (var k = 0; k < anchors.length; k++) {
-						if (
-							vertex.center.x >= (anchors[k].center.x - (2 * vertexRadius)) &&
-							vertex.center.x < (anchors[k].center.x + (2 * vertexRadius)) &&
-							vertex.center.y >= (anchors[k].center.y - (2 * vertexRadius)) &&
-							vertex.center.y < (anchors[k].center.y + (2 * vertexRadius))
-						) {
-							if (vertex.center.x < anchors[k].center.x) {
-								vertex.center.x = anchors[k].center.x - (2 * vertexRadius);
-							} else if (vertex.center.x >= anchors[k].center.x) {
-								vertex.center.x = anchors[k].center.x + (2 * vertexRadius);
-							} else if (vertex.center.y < anchors[k].center.y) {
-								vertex.center.y = anchors[k].center.y - (2 * vertexRadius);
-							} else if (vertex.center.y >= anchors[k].center.y) {
-								vertex.center.y = anchors[k].center.y + (2 * vertexRadius);
-							}
-						}
-					}
+					this.handleCollisionsWithAnchor(vertex, anchors, vertexRadius);
 				}
 			} // end if(vertex.mobile)
 		} // end for loop
@@ -368,6 +345,43 @@ class IndependentSetPhysicsSimulation {
 			vertices.push(new Vertex('V_' + i, vertexRadius));
 		}
 		return vertices;
+	}
+	
+	handleCollisionsWithAnchor (vertex, anchors, vertexRadius) {
+		for (var anchor of anchors) {
+			if (this.isCollidingWithAnchor(vertex, anchor, vertexRadius)) {
+				if (vertex.center.x < anchor.center.x) {
+					vertex.center.x = anchor.center.x - (2 * vertexRadius);
+				} else if (vertex.center.x >= anchor.center.x) {
+					vertex.center.x = anchor.center.x + (2 * vertexRadius);
+				} else if (vertex.center.y < anchor.center.y) {
+					vertex.center.y = anchor.center.y - (2 * vertexRadius);
+				} else if (vertex.center.y >= anchor.center.y) {
+					vertex.center.y = anchor.center.y + (2 * vertexRadius);
+				}
+			}
+		}
+	}
+	
+	handleCollisionsWithVertices (vertex, vertices, vertexRadius) {
+		for (var otherVertex of vertices) {
+			if (
+				(vertex.center.x - otherVertex.center.x <= 2.1 * vertexRadius) && 
+				(vertex.center.y - otherVertex.center.y <= 2.1 * vertexRadius)
+			) {
+				vertex.velocity.x *= -1;
+				vertex.velocity.y *= -1;
+			}
+		}
+	}
+	
+	isCollidingWithAnchor (vertex, anchor, vertexRadius) {
+		return (
+			vertex.center.x >= (anchor.center.x - (2 * vertexRadius)) &&
+			vertex.center.x < (anchor.center.x + (2 * vertexRadius)) &&
+			vertex.center.y >= (anchor.center.y - (2 * vertexRadius)) &&
+			vertex.center.y < (anchor.center.y + (2 * vertexRadius))
+		);
 	}
 	
 	isIndependentSet (vertices) {
