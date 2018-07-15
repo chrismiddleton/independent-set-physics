@@ -571,11 +571,11 @@ class IndependentSetPhysicsSimulation {
 	
 	updateAcceleration (vertex, timeStep, attractionFactor, repulsionFactor) {
 		var force = {x: 0, y: 0};
-		var forceComponent = {x: 0, y: 0};
 		var unitVector = {x: 0, y: 0};
 		var distanceSquared;
 		
 		// first calculate force with adjacent vertices (repulsion)
+		var forceComponent = {x: 0, y: 0};
 		for (var opposingVertex of vertex.adjacentVertices) {
 			// vector away from opposingVertex towards vertex
 			unitVector.x = vertex.center.x - opposingVertex.center.x;
@@ -586,13 +586,14 @@ class IndependentSetPhysicsSimulation {
 			if (distanceSquared == 0) { 
 				distanceSquared = Math.pow(10, -3);
 			}
-			forceComponent.x = (this.repulsionFactor * vertex.mass * opposingVertex.mass * unitVector.x) / distanceSquared;
-			forceComponent.y = (this.repulsionFactor * vertex.mass * opposingVertex.mass * unitVector.y) / distanceSquared;
-			force.x += forceComponent.x;
-			force.y += forceComponent.y;
+			forceComponent.x += (this.repulsionFactor * vertex.mass * opposingVertex.mass * unitVector.x) / distanceSquared;
+			forceComponent.y += (this.repulsionFactor * vertex.mass * opposingVertex.mass * unitVector.y) / distanceSquared;
 		}
+		force.x += forceComponent.x;
+		force.y += forceComponent.y;
 
 		// then calculate force with nonadjacent vertices
+		var forceComponent = {x: 0, y: 0};
 		for (var opposingVertex of vertex.nonAdjacentVertices) {
 			// vector away from vertex towards opposingVertex
 			unitVector.x = opposingVertex.center.x - vertex.center.x;
@@ -603,11 +604,11 @@ class IndependentSetPhysicsSimulation {
 			if (distanceSquared <= 0.01) { 
 				distanceSquared = 0.01;
 			}
-			forceComponent.x = (this.attractionFactor * vertex.mass * opposingVertex.mass * unitVector.x) / distanceSquared;
-			forceComponent.y = (this.attractionFactor * vertex.mass * opposingVertex.mass * unitVector.y) / distanceSquared;
-			force.x += forceComponent.x;
-			force.y += forceComponent.y;
+			forceComponent.x += (this.attractionFactor * vertex.mass * opposingVertex.mass * unitVector.x) / distanceSquared;
+			forceComponent.y += (this.attractionFactor * vertex.mass * opposingVertex.mass * unitVector.y) / distanceSquared;
 		}
+		force.x += forceComponent.x;
+		force.y += forceComponent.y;
 
 		vertex.acceleration.x = force.x;
 		vertex.acceleration.y = force.y;
