@@ -370,6 +370,20 @@ class IndependentSetPhysicsSimulation {
 		return vertices;
 	}
 	
+	isIndependentSet (vertices) {
+		var edgeFound = false;
+		for (var w in vertices) {
+			if (!vertices.hasOwnProperty(w)) continue;
+			for (var x = 0; x < vertices[w].adjacentVertices.length; x++) {
+				if (vertices[parseInt(vertices[w].adjacentVertices[x].name.substring(2), 10)] != null) {
+					edgeFound = true;
+					break;
+				}
+			}
+			if (edgeFound) break;
+		}
+	}
+	
 	onStartButtonClick () {
 		if (!this.simulating) {
 			this.start();
@@ -417,22 +431,10 @@ class IndependentSetPhysicsSimulation {
 			var resultString = queryRegionVerticesValues.join("<br>");
 			var setSize = queryRegionVerticesValues.length;
 		
-			var edgeFound = false;
-			for (var w in queryRegionVertices) {
-				if (!queryRegionVertices.hasOwnProperty(w)) continue;
-				for (var x = 0; x < queryRegionVertices[w].adjacentVertices.length; x++) {
-					if (queryRegionVertices[parseInt(queryRegionVertices[w].adjacentVertices[x].name.substring(2), 10)] != null) {
-						edgeFound = true;
-						break;
-					}
-				}
-				if (edgeFound) break;
-			}
-		
-			if (edgeFound) {
-				this.independenceDiv.innerHTML = "Uh, oh! It appears that this set is not independent.";
-			} else {
+			if (this.isIndependentSet(queryRegionVertices)) {
 				this.independenceDiv.innerHTML = "Success! An independent set of size " + setSize + "! <span style='font-size: 0.6em;'><a href='http://www.thewire.com/entertainment/2012/01/target-kristen-wiigs-target-lady-approved/47866/'>I gotta get me one o' those.</a></span>";
+			} else {
+				this.independenceDiv.innerHTML = "Uh, oh! It appears that this set is not independent.";
 			}
 						
 			this.resultsDiv.innerHTML = resultString;
