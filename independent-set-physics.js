@@ -574,11 +574,9 @@ class IndependentSetPhysicsSimulation {
 		var forceComponent = {x: 0, y: 0};
 		var unitVector = {x: 0, y: 0};
 		var distanceSquared;
+		
 		// first calculate force with adjacent vertices (repulsion)
-		var opposingVertices = vertex.adjacentVertices;
-		for (var j = 0; j < opposingVertices.length; j++) {
-			var opposingVertex = opposingVertices[j];
-	
+		for (var opposingVertex of vertex.adjacentVertices) {
 			// vector away from opposingVertex towards vertex
 			unitVector.x = vertex.center.x - opposingVertex.center.x;
 			unitVector.y = vertex.center.y - opposingVertex.center.y;
@@ -595,12 +593,7 @@ class IndependentSetPhysicsSimulation {
 		}
 
 		// then calculate force with nonadjacent vertices
-
-		opposingVertices = vertex.nonAdjacentVertices;
-
-		for (var j = 0; j < opposingVertices.length; j++) {
-			opposingVertex = opposingVertices[j];
-
+		for (var opposingVertex of vertex.nonAdjacentVertices) {
 			// vector away from vertex towards opposingVertex
 			unitVector.x = opposingVertex.center.x - vertex.center.x;
 			unitVector.y = opposingVertex.center.y - vertex.center.y;
