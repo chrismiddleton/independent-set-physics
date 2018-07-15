@@ -412,32 +412,23 @@ class IndependentSetPhysicsSimulation {
 	
 	queryRegion () {
 		if (this.querying) return;
+		
 		this.pause();
+		
+		this.querying = true;
+		this.queryDiv.style.display = 'block';
 
 		var regionX = this.regionXTextbox.value;
 		var regionY = this.regionYTextbox.value;
 		var regionRadius = this.regionRadiusTextbox.value;
 		var canvas = this.canvas;
 		var context = this.context;
-
-		this.imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-		this.renderQueryRegionBoundary(context, regionX, regionY, regionRadius);
-
-		this.querying = true;
-		this.queryDiv.style.display = 'block';
 		var vertices = this.vertices;
+
+		this.renderQueryRegionBoundary(context, regionX, regionY, regionRadius);
 		var queryRegionVertices = this.computeQueryRegionVertices(vertices, regionX, regionY, regionRadius);
-		var queryRegionVerticesValues = Object.values(queryRegionVertices);
-		var resultString = queryRegionVerticesValues.join("<br>");
-		var setSize = queryRegionVerticesValues.length;
-	
-		if (this.isIndependentSet(queryRegionVertices)) {
-			this.independenceDiv.innerHTML = "Success! An independent set of size " + setSize + "! <span style='font-size: 0.6em;'><a href='http://www.thewire.com/entertainment/2012/01/target-kristen-wiigs-target-lady-approved/47866/'>I gotta get me one o' those.</a></span>";
-		} else {
-			this.independenceDiv.innerHTML = "Uh, oh! It appears that this set is not independent.";
-		}
-					
-		this.resultsDiv.innerHTML = resultString;
+		this.showIndependence(queryRegionVertices);
+		this.showResults(queryRegionVertices);
 	}
 	
 	render () {
@@ -455,6 +446,7 @@ class IndependentSetPhysicsSimulation {
 	}
 	
 	renderQueryRegionBoundary (context, regionX, regionY, regionRadius) {
+		this.imageData = context.getImageData(0, 0, canvas.width, canvas.height);
 		context.save();
 		context.strokeStyle = '#000';
 		context.lineWidth = 1;
@@ -475,6 +467,22 @@ class IndependentSetPhysicsSimulation {
 		this.animationID = window.setTimeout(this.animate.bind(this), 40);
 		this.paused = false;
 		this.pauseButton.value = "Pause simulation";
+	}
+	
+	showIndependence (queryRegionVertices) {
+		var queryRegionVerticesValues = Object.values(queryRegionVertices);
+		var setSize = queryRegionVerticesValues.length;
+		if (this.isIndependentSet(queryRegionVertices)) {
+			this.independenceDiv.innerHTML = "Success! An independent set of size " + setSize + "! <span style='font-size: 0.6em;'><a href='http://www.thewire.com/entertainment/2012/01/target-kristen-wiigs-target-lady-approved/47866/'>I gotta get me one o' those.</a></span>";
+		} else {
+			this.independenceDiv.innerHTML = "Uh, oh! It appears that this set is not independent.";
+		}
+	}
+	
+	showResults (queryRegionVertices) {
+		var queryRegionVerticesValues = Object.values(queryRegionVertices);
+		var resultString = queryRegionVerticesValues.join("<br>");
+		this.resultsDiv.innerHTML = resultString;
 	}
 	
 	start () {
