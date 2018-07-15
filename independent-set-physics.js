@@ -11,15 +11,34 @@
  * and make sure the repulsionFactor is large enough to counteract that.
 **/
 
+class Vec2 {
+	constructor (x = 0, y = 0) {
+		this.x = x;
+		this.y = y;
+	}
+	load (vec) {
+		this.x = vec.x;
+		this.y = vec.y;
+	}
+	plus (other) {
+		return new Vec2(this.x + other.x, this.y + other.y);
+	}
+}
+
+Vec2.copyFrom = function (vec, otherVec) {
+	vec.x = otherVec.x;
+	vec.y = otherVec.y;
+};
+
 class Vertex {
 
 	constructor (name, radius) {
 		this.name = name;
-		this.center = {x: 0, y: 0};
-		this.acceleration = {x: 0, y: 0};
-		this.velocity = {x: 0, y: 0};
+		this.center = new Vec2();
+		this.acceleration = new Vec2();
+		this.velocity = new Vec2();
 		this.color = '#ffffff';
-		this.textCenter = {x: 0, y: 0};
+		this.textCenter = new Vec2();
 		this.adjacentVertices = [];
 		this.nonAdjacentVertices = [];
 		this.mobile = true;
@@ -206,8 +225,8 @@ class IndependentSetPhysicsSimulation {
 	}
 	
 	computeAttraction (vertex) {
-		var attraction = {x: 0, y: 0};
-		var unitVector = {x: 0, y: 0};
+		var attraction = new Vec2();
+		var unitVector = new Vec2();
 		var distanceSquared;
 		for (var opposingVertex of vertex.nonAdjacentVertices) {
 			// vector away from vertex towards opposingVertex
@@ -261,8 +280,8 @@ class IndependentSetPhysicsSimulation {
 	}
 	
 	computeRepulsion (vertex) {
-		var repulsion = {x: 0, y: 0};
-		var unitVector = {x: 0, y: 0};
+		var repulsion = new Vec2();
+		var unitVector = new Vec2();
 		var distanceSquared;
 		for (var opposingVertex of vertex.adjacentVertices) {
 			// vector away from opposingVertex towards vertex
@@ -282,7 +301,7 @@ class IndependentSetPhysicsSimulation {
 	
 	generateAnchors (canvas, anchorMass) {
 		var anchor = new Vertex('x');
-		anchor.center = {x: canvas.width / 2, y: canvas.height / 2};
+		anchor.center = new Vec2(canvas.width / 2, canvas.height / 2);
 		anchor.mass = anchorMass;
 		anchor.mobile = false;
 		anchor.color = '#000';
@@ -516,7 +535,7 @@ class IndependentSetPhysicsSimulation {
 		var maxColor = parseInt('ffffff', 16);
 
 		for (var vertex of vertices) {
-			vertex.center = {x: (Math.random() * canvas.width) + 1, y: (Math.random() * canvas.height) + 1};
+			vertex.center = new Vec2((Math.random() * canvas.width) + 1, (Math.random() * canvas.height) + 1);
 			vertex.center.x = Math.max(20, Math.min((canvas.width - 20), vertex.center.x));
 			vertex.center.y = Math.max(20, Math.min((canvas.height - 20), vertex.center.y));
 			vertexSubscript = parseInt(vertex.name.substring(2), 10);
@@ -610,20 +629,11 @@ class IndependentSetPhysicsSimulation {
 	}
 	
 	updateAcceleration (vertex, attractionFactor, repulsionFactor) {
-		var force = {x: 0, y: 0};
-		
-		// first calculate force with adjacent vertices (repulsion)
-		var repulsion = this.computeRepulsion(vertex);
-		force.x += repulsion.x;
-		force.y += repulsion.y;
-
-		// then calculate force with nonadjacent vertices
-		var attraction = this.computeAttraction(vertex)
-		force.x += forceComponent.x;
-		force.y += forceComponent.y;
-
-		vertex.acceleration.x = force.x;
-		vertex.acceleration.y = force.y;
+		// compute force from nonadjacent vertices (attraction)
+		var attraction = this.computeAttraction(vertex, attractionFactor);
+		// compute force from adjacent vertices (repulsion)
+		var repulsion = this.computeRepulsion(vertex, repulsionFactor);
+		vertex.acceleration.load(repulsion.plus(attraction));
 	}
 	
 	updatePosition (vertex, timeStep) {
