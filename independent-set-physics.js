@@ -39,11 +39,6 @@ class Vec2 {
 	}
 }
 
-Vec2.copyFrom = function (vec, otherVec) {
-	vec.x = otherVec.x;
-	vec.y = otherVec.y;
-};
-
 class Vertex {
 
 	constructor (name, radius) {
