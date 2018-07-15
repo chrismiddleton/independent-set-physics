@@ -131,28 +131,7 @@ class IndependentSetPhysicsSimulation {
 	}
 	
 	animate () {
-	
-		// calculate changes
-	
-		// clear the canvas
-		var canvas = this.canvas;
-		var context = this.context;
-		var vertices = this.vertices;
-		context.clearRect(0, 0, canvas.width, canvas.height);
-	
-		// draw edges if checked
-		if (this.drawingEdges) {
-			var edges = this.edges;
-			for (var edge of edges) {
-				edge.render(context);
-			}
-		}
-
-		// draw vertices
-		for (var vertex of vertices) {
-			vertex.render(context);
-		}
-	
+		this.render();
 		this.calculate();
 		this.animationID = window.setTimeout(this.animate.bind(this), 40);
 		this.iteration++;
@@ -464,6 +443,20 @@ class IndependentSetPhysicsSimulation {
 			}
 						
 			this.resultsDiv.innerHTML = resultString;
+		}
+	}
+	
+	render () {
+		// clear the canvas
+		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		// draw edges if checked
+		if (this.drawingEdges) this.renderObjects(this.context, this.edges);
+		this.renderObjects(this.context, this.vertices);
+	}
+	
+	renderObjects (context, objects) {
+		for (var object of objects) {
+			object.render(context);
 		}
 	}
 	
