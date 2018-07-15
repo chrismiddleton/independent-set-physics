@@ -177,17 +177,6 @@ class IndependentSetPhysicsSimulation {
 	}
 	
 	calculate () {
-		var canvas = this.canvas;
-		var timeStep = 1; // 1 seems good
-	
-		var anchors = this.anchors;
-		var numVertices = this.numVertices;
-		var numEdges = this.numEdges;
-	
-		if (numVertices < 20 && numEdges / numVertices > 0.5){
-			for (var a = 0; a < anchors.length; a++){
-				a.mass = this.anchorMass;
-			}
 		 // 1 seems good
 		var timeStep = 1;
 		for (var vertex of this.vertices) {
