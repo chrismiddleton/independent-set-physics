@@ -299,10 +299,16 @@ class IndependentSetPhysicsSimulation {
 		return edges;
 	}
 	
-	generateVertices (numVertices, vertexRadius) {
+	generateVertices (numVertices, vertexRadius, canvas) {
 		var vertices = [];
 		for (var i = 0; i < numVertices; i++) {
-			vertices.push(new Vertex('V_' + i, vertexRadius));
+			var vertex = new Vertex('V_' + i, vertexRadius)
+			vertex.center = new Vec2((Math.random() * canvas.width) + 1, (Math.random() * canvas.height) + 1);
+			vertex.center.x = Math.max(20, Math.min((canvas.width - 20), vertex.center.x));
+			vertex.center.y = Math.max(20, Math.min((canvas.height - 20), vertex.center.y));
+			var vertexSubscript = parseInt(vertex.name.substring(2), 10);
+			vertex.color = 'hsl(' + (vertexSubscript * (360 / numVertices)) + ', 100%, 75%)';
+			vertices.push(vertex);
 		}
 		return vertices;
 	}
@@ -494,21 +500,8 @@ class IndependentSetPhysicsSimulation {
 		var numEdges = this.numEdges;
 
 		var vertexRadius = this.vertexRadius;
-		var vertices = this.vertices = this.generateVertices(this.numVertices, this.vertexRadius);
-
 		var canvas = this.canvas;
-		var radius = canvas.height/4;
-
-		var vertexSubscript;
-		var maxColor = parseInt('ffffff', 16);
-
-		for (var vertex of vertices) {
-			vertex.center = new Vec2((Math.random() * canvas.width) + 1, (Math.random() * canvas.height) + 1);
-			vertex.center.x = Math.max(20, Math.min((canvas.width - 20), vertex.center.x));
-			vertex.center.y = Math.max(20, Math.min((canvas.height - 20), vertex.center.y));
-			vertexSubscript = parseInt(vertex.name.substring(2), 10);
-			vertex.color = 'hsl(' + (vertexSubscript * (360 / numVertices)) + ', 100%, 75%)';
-		}
+		var vertices = this.vertices = this.generateVertices(this.numVertices, this.vertexRadius, canvas);
 	
 		this.withAnchor = this.withAnchorCheckbox.checked;
 		this.withWalls = this.withWallsCheckbox.checked;
