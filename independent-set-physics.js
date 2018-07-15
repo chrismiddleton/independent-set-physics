@@ -394,15 +394,7 @@ class IndependentSetPhysicsSimulation {
 			var context = this.context;
 	
 			this.imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-	
-			context.save();
-			context.strokeStyle = '#000';
-			context.lineWidth = 1;
-			context.beginPath();
-			context.arc(regionX, regionY, regionRadius, 0, (2 * Math.PI), true);
-			context.closePath();
-			context.stroke();
-			context.restore();
+			this.renderQueryRegionBoundary(context, regionX, regionY, regionRadius);
 	
 			this.querying = true;
 			this.queryDiv.style.display = 'block';
@@ -460,6 +452,17 @@ class IndependentSetPhysicsSimulation {
 		}
 	}
 	
+	renderQueryRegionBoundary (context, regionX, regionY, regionRadius) {
+		context.save();
+		context.strokeStyle = '#000';
+		context.lineWidth = 1;
+		context.beginPath();
+		context.arc(regionX, regionY, regionRadius, 0, (2 * Math.PI), true);
+		context.closePath();
+		context.stroke();
+		context.restore();
+	}
+		
 	resume () {
 		if (this.querying) {
 			this.querying = false;
