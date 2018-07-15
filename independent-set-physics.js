@@ -365,7 +365,6 @@ class IndependentSetPhysicsSimulation {
 		this.numEdges = this.numEdgesTextbox.value;		
 		this.withAnchor = this.withAnchorCheckbox.checked;
 		this.withWalls = this.withWallsCheckbox.checked;
-	
 		if (this.manualOverrideCheckbox.checked) {
 			this.attractionFactor = this.attractionFactorTextbox.value;
 			this.repulsionFactor = this.repulsionFactorTextbox.value;
@@ -449,22 +448,22 @@ class IndependentSetPhysicsSimulation {
 		}
 	}
 	
-	pause () {
+	pause (updateUI = true) {
 		this.paused = true;
 		if (this.animationID) {
 			clearTimeout(this.animationID);
 			this.animationID = null;
 		}
-		this.pauseButton.value = "Unpause simulation";
+		this.updateUI();
 	}
 	
 	queryRegion () {
 		if (this.querying) return;
 		
-		this.pause();
+		// Don't update the UI yet - we do it at the bottom
+		this.pause(false);
 		
 		this.querying = true;
-		this.queryDiv.style.display = 'block';
 
 		var regionX = this.regionXTextbox.value;
 		var regionY = this.regionYTextbox.value;
@@ -477,6 +476,7 @@ class IndependentSetPhysicsSimulation {
 		var queryRegionVertices = this.computeQueryRegionVertices(vertices, regionX, regionY, regionRadius);
 		this.showIndependence(queryRegionVertices);
 		this.showResults(queryRegionVertices);
+		this.updateUI();
 	}
 	
 	render () {
@@ -506,15 +506,11 @@ class IndependentSetPhysicsSimulation {
 	}
 		
 	resume () {
-		if (this.querying) {
-			this.querying = false;
-			this.queryDiv.style.display = 'none';
-			this.context.putImageData(this.imageData, 0, 0);
-		}
-
-		this.animationID = window.setTimeout(this.animate.bind(this), 40);
 		this.paused = false;
-		this.pauseButton.value = "Pause simulation";
+		this.querying = false;
+		this.context.putImageData(this.imageData, 0, 0);
+		this.animationID = window.setTimeout(this.animate.bind(this), 40);
+		this.updateUI();
 	}
 	
 	showIndependence (queryRegionVertices) {
@@ -536,6 +532,8 @@ class IndependentSetPhysicsSimulation {
 	start () {
 		this.initParameters();
 		this.simulating = true;
+		this.querying = false;
+		this.paused = false;
 		this.iteration = 0;
 		this.initGraph();
 		this.animate();
@@ -544,25 +542,16 @@ class IndependentSetPhysicsSimulation {
 	
 	stop () {
 		this.simulating = false;
-		this.startButton.value = "Start simulation";
 		clearTimeout(this.animationID);
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-	
-		if (this.querying) {
-			this.querying = false;
-			this.queryDiv.style.display = 'none';
-		}
-	
-		if (this.paused) {
-			this.paused = false;
-			this.pauseButton.value = "Pause simulation";
-		}
+		this.querying = false;
+		this.paused = false;
+		this.updateUI();
 	}
 	
 	toggleEdges () {
-		var numEdges = this.numEdges;
 		if (this.simulating) {
-			if (numEdges < 1000) {
+			if (this.numEdges < 1000) {
 				this.drawingEdges = this.drawEdgesCheckbox.checked;
 			} else if (this.drawEdgesCheckbox.checked) {
 				var message = "Drawing more than 1000 edges is a bad idea unless you have a very fast computer.";
@@ -593,11 +582,19 @@ class IndependentSetPhysicsSimulation {
 	
 	updateUI () {
 		if (this.simulating) {
-			if (this.querying) {
-				this.queryDiv.style.display = 'none';
-				this.querying = false;
-			}
 			this.startButton.value = "End simulation";
+		} else {
+			this.startButton.value = "Start simulation";
+		}
+		if (this.simulating && this.paused) {
+			this.pauseButton.value = "Unpause simulation";
+		} else {
+			this.pauseButton.value = "Pause simulation";
+		}
+		if (this.simulating && this.paused && this.querying) {
+			this.queryDiv.style.display = 'block';
+		} else {
+			this.queryDiv.style.display = 'none';
 		}
 	}
 	
