@@ -472,7 +472,7 @@ class IndependentSetPhysicsSimulation {
 		var context = this.context;
 		var vertices = this.vertices;
 
-		this.renderQueryRegionBoundary(context, regionX, regionY, regionRadius);
+		this.renderQueryRegionBoundary(canvas, context, regionX, regionY, regionRadius);
 		var queryRegionVertices = this.computeQueryRegionVertices(vertices, regionX, regionY, regionRadius);
 		this.showIndependence(queryRegionVertices);
 		this.showResults(queryRegionVertices);
@@ -493,7 +493,7 @@ class IndependentSetPhysicsSimulation {
 		}
 	}
 	
-	renderQueryRegionBoundary (context, regionX, regionY, regionRadius) {
+	renderQueryRegionBoundary (canvas, context, regionX, regionY, regionRadius) {
 		this.imageData = context.getImageData(0, 0, canvas.width, canvas.height);
 		context.save();
 		context.strokeStyle = '#000';
