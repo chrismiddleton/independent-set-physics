@@ -318,6 +318,18 @@ class IndependentSetPhysicsSimulation {
 		return nonEdges;
 	}
 	
+	computeQueryRegionVertices (vertices, regionX, regionY, regionRadius) {
+		var queryRegionVertices = {};
+		for (var v = 0; v < vertices.length; v++) {
+			if (vertices[v].mobile) { // weeds out anchor vertices
+				if (Math.pow(vertices[v].center.x - regionX, 2) + Math.pow(vertices[v].center.y - regionY, 2) < Math.pow(regionRadius, 2)) {
+					queryRegionVertices[v] = vertices[v];
+				}
+			}
+		}
+		return queryRegionVertices;
+	}
+	
 	generateAnchors (canvas, anchorMass) {
 		var anchor = new Vertex('x');
 		anchor.center = {x: canvas.width / 2, y: canvas.height / 2};
@@ -399,15 +411,8 @@ class IndependentSetPhysicsSimulation {
 	
 			this.querying = true;
 			this.queryDiv.style.display = 'block';
-			var queryRegionVertices = {};
 			var vertices = this.vertices;
-			for (var v = 0; v < vertices.length; v++) {
-				if (vertices[v].mobile) { // weeds out anchor vertices
-					if (Math.pow(vertices[v].center.x - regionX, 2) + Math.pow(vertices[v].center.y - regionY, 2) < Math.pow(regionRadius, 2)) {
-						queryRegionVertices[v] = vertices[v];
-					}
-				}
-			}
+			var queryRegionVertices = this.computeQueryRegionVertices(vertices, regionX, regionY, regionRadius);
 			var queryRegionVerticesValues = Object.values(queryRegionVertices);
 			var resultString = queryRegionVerticesValues.join("<br>");
 			var setSize = queryRegionVerticesValues.length;
