@@ -399,34 +399,29 @@ class IndependentSetPhysicsSimulation {
 	
 			this.querying = true;
 			this.queryDiv.style.display = 'block';
-			var queryRegionVertices = [];
-			var setSize = 0;
-			var resultString = "";
+			var queryRegionVertices = {};
 			var vertices = this.vertices;
 			for (var v = 0; v < vertices.length; v++) {
 				if (vertices[v].mobile) { // weeds out anchor vertices
 					if (Math.pow(vertices[v].center.x - regionX, 2) + Math.pow(vertices[v].center.y - regionY, 2) < Math.pow(regionRadius, 2)) {
 						queryRegionVertices[v] = vertices[v];
-						setSize++;
-						resultString += (vertices[v].toString() + "<br />");
 					}
 				}
 			}
+			var queryRegionVerticesValues = Object.values(queryRegionVertices);
+			var resultString = queryRegionVerticesValues.join("<br>");
+			var setSize = queryRegionVerticesValues.length;
 		
 			var edgeFound = false;
-			for (var w = 0; w < queryRegionVertices.length; w++) {
-				if (queryRegionVertices[w] != null) {
-					for (var x = 0; x < queryRegionVertices[w].adjacentVertices.length; x++) {
-						if (queryRegionVertices[parseInt(queryRegionVertices[w].adjacentVertices[x].name.substring(2), 10)] != null) {
-							edgeFound = true;
-							break;
-						}
+			for (var w in queryRegionVertices) {
+				if (!queryRegionVertices.hasOwnProperty(w)) continue;
+				for (var x = 0; x < queryRegionVertices[w].adjacentVertices.length; x++) {
+					if (queryRegionVertices[parseInt(queryRegionVertices[w].adjacentVertices[x].name.substring(2), 10)] != null) {
+						edgeFound = true;
+						break;
 					}
 				}
-			
-				if (edgeFound) {
-					break;
-				}
+				if (edgeFound) break;
 			}
 		
 			if (edgeFound) {
