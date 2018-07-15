@@ -377,15 +377,16 @@ class IndependentSetPhysicsSimulation {
 	
 	pause () {
 		this.paused = true;
-		clearTimeout(this.animationID);
+		if (this.animationID) {
+			clearTimeout(this.animationID);
+			this.animationID = null;
+		}
 		this.pauseButton.value = "Unpause simulation";
 	}
 	
 	queryRegion () {
 		if (!this.querying) {
-			if (!this.paused) {
-				this.pauseButton.click();	
-			}
+			this.pause();
 	
 			var regionX = this.regionXTextbox.value;
 			var regionY = this.regionYTextbox.value;
